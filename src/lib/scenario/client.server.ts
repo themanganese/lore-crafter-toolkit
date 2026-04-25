@@ -102,3 +102,83 @@ export async function generateImage(args: {
 
   throw new Error("Scenario job timed out after 90s");
 }
+
+// Image-to-image (edit) — sends a source image with the new prompt.
+export async function editImage(args: {
+  prompt: string;
+  sourceImageUrl: string;
+  modelId?: string;
+  strength?: number; // 0..1, how much to deviate
+  width?: number;
+  height?: number;
+}): Promise<ScenarioGenResult> {
+  const modelId = args.modelId || "model_default";
+
+  const submit = await fetch(`${BASE}/generate/img2img`, {
+    method: "POST",
+    headers: {
+      Authorization: authHeader(),
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      prompt: args.prompt,
+      modelId,
+      image: args.sourceImageUrl,
+      strength: args.strength ?? 0.55,
+      width: args.width ?? 1024,
+      height: args.height ?? 1024,
+      numSamples: 1,
+      numInferenceSteps: 30,
+      guidance: 7,
+    }),
+  });
+
+  const submitBody = await submit.text();
+  if (!submit.ok) {
+    throw new Error(`Scenario img2img submit failed ${submit.status}: ${submitBody.slice(0, 240)}`);
+  }
+  const submitJson = JSON.parse(submitBody);
+  const jobId: string | undefined = submitJson?.job?.jobId ?? submitJson?.jobId ?? submitJson?.id;
+  if (!jobId) {
+    const direct = submitJson?.images?.[0]?.url || submitJson?.asset?.url;
+    if (direct) return { imageUrl: direct, jobId: "immediate", model: modelId };
+    throw new Error("Scenario img2img response had no jobId or image URL");
+  }
+
+  const deadline = Date.now() + 90_000;
+  while (Date.now() < deadline) {
+    await new Promise((r) => setTimeout(r, 2000));
+    const stat = await fetch(`${BASE}/jobs/${jobId}`, {
+      headers: { Authorization: authHeader(), Accept: "application/json" },
+    });
+    if (!stat.ok) continue;
+    const sj = await stat.json();
+    const status = sj?.job?.status ?? sj?.status;
+    if (status === "success" || status === "completed") {
+      const imageUrl =
+        sj?.asset?.url ||
+        sj?.images?.[0]?.url ||
+        sj?.assets?.[0]?.url;
+      if (imageUrl && typeof imageUrl === "string" && imageUrl.startsWith("http")) {
+        return { imageUrl, jobId, model: modelId };
+      }
+      const assetId = sj?.job?.metadata?.assetIds?.[0] || sj?.assetIds?.[0];
+      if (assetId) {
+        const asset = await fetch(`${BASE}/assets/${assetId}`, {
+          headers: { Authorization: authHeader(), Accept: "application/json" },
+        });
+        if (asset.ok) {
+          const aj = await asset.json();
+          const url = aj?.asset?.url || aj?.url;
+          if (url) return { imageUrl: url, jobId, model: modelId };
+        }
+      }
+      throw new Error("Scenario edit completed but no asset URL found");
+    }
+    if (status === "failure" || status === "failed") {
+      throw new Error(`Scenario edit failed: ${sj?.job?.statusMessage || sj?.error || "unknown"}`);
+    }
+  }
+  throw new Error("Scenario edit timed out after 90s");
+}
