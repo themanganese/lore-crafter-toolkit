@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CharacterGameIdRouteImport } from './routes/character.$gameId'
 import { Route as CharacterGameIdBriefRouteImport } from './routes/character.$gameId.brief'
 import { Route as CharacterGameIdAnvilRouteImport } from './routes/character.$gameId.anvil'
+import { Route as CharacterGameIdEditGenerationIdRouteImport } from './routes/character.$gameId.edit.$generationId'
 
 const ShareRoute = ShareRouteImport.update({
   id: '/share',
@@ -46,6 +47,12 @@ const CharacterGameIdAnvilRoute = CharacterGameIdAnvilRouteImport.update({
   path: '/anvil',
   getParentRoute: () => CharacterGameIdRoute,
 } as any)
+const CharacterGameIdEditGenerationIdRoute =
+  CharacterGameIdEditGenerationIdRouteImport.update({
+    id: '/edit/$generationId',
+    path: '/edit/$generationId',
+    getParentRoute: () => CharacterGameIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByFullPath {
   '/character/$gameId': typeof CharacterGameIdRouteWithChildren
   '/character/$gameId/anvil': typeof CharacterGameIdAnvilRoute
   '/character/$gameId/brief': typeof CharacterGameIdBriefRoute
+  '/character/$gameId/edit/$generationId': typeof CharacterGameIdEditGenerationIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +70,7 @@ export interface FileRoutesByTo {
   '/character/$gameId': typeof CharacterGameIdRouteWithChildren
   '/character/$gameId/anvil': typeof CharacterGameIdAnvilRoute
   '/character/$gameId/brief': typeof CharacterGameIdBriefRoute
+  '/character/$gameId/edit/$generationId': typeof CharacterGameIdEditGenerationIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +80,7 @@ export interface FileRoutesById {
   '/character/$gameId': typeof CharacterGameIdRouteWithChildren
   '/character/$gameId/anvil': typeof CharacterGameIdAnvilRoute
   '/character/$gameId/brief': typeof CharacterGameIdBriefRoute
+  '/character/$gameId/edit/$generationId': typeof CharacterGameIdEditGenerationIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +91,7 @@ export interface FileRouteTypes {
     | '/character/$gameId'
     | '/character/$gameId/anvil'
     | '/character/$gameId/brief'
+    | '/character/$gameId/edit/$generationId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +100,7 @@ export interface FileRouteTypes {
     | '/character/$gameId'
     | '/character/$gameId/anvil'
     | '/character/$gameId/brief'
+    | '/character/$gameId/edit/$generationId'
   id:
     | '__root__'
     | '/'
@@ -97,6 +109,7 @@ export interface FileRouteTypes {
     | '/character/$gameId'
     | '/character/$gameId/anvil'
     | '/character/$gameId/brief'
+    | '/character/$gameId/edit/$generationId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -150,17 +163,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CharacterGameIdAnvilRouteImport
       parentRoute: typeof CharacterGameIdRoute
     }
+    '/character/$gameId/edit/$generationId': {
+      id: '/character/$gameId/edit/$generationId'
+      path: '/edit/$generationId'
+      fullPath: '/character/$gameId/edit/$generationId'
+      preLoaderRoute: typeof CharacterGameIdEditGenerationIdRouteImport
+      parentRoute: typeof CharacterGameIdRoute
+    }
   }
 }
 
 interface CharacterGameIdRouteChildren {
   CharacterGameIdAnvilRoute: typeof CharacterGameIdAnvilRoute
   CharacterGameIdBriefRoute: typeof CharacterGameIdBriefRoute
+  CharacterGameIdEditGenerationIdRoute: typeof CharacterGameIdEditGenerationIdRoute
 }
 
 const CharacterGameIdRouteChildren: CharacterGameIdRouteChildren = {
   CharacterGameIdAnvilRoute: CharacterGameIdAnvilRoute,
   CharacterGameIdBriefRoute: CharacterGameIdBriefRoute,
+  CharacterGameIdEditGenerationIdRoute: CharacterGameIdEditGenerationIdRoute,
 }
 
 const CharacterGameIdRouteWithChildren = CharacterGameIdRoute._addFileChildren(
@@ -176,12 +198,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

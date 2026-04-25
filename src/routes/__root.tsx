@@ -1,6 +1,7 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 import { Roster } from "@/components/Roster";
+import { AskAIFloating } from "@/components/AskAIFloating";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -79,6 +80,7 @@ function RootComponent() {
       <main className="flex-1 min-w-0">
         <Outlet />
       </main>
+      <AskAIFloating />
       <Toaster />
     </div>
   );
