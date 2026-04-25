@@ -109,7 +109,9 @@ export const sensorTowerProvider: AdIntelProvider = {
   },
 
   async fetchTopAds({ externalId, limit = 24 }) {
-    // Try wide window first (90 days, multi-country, all major networks).
+    // SensorTower's `limit` param only accepts {10, 50, 100}.
+    const apiLimit = limit <= 10 ? 10 : limit <= 50 ? 50 : 100;
+
     const baseParams = {
       app_ids: externalId,
       start_date: isoDaysAgo(90),
@@ -118,28 +120,33 @@ export const sensorTowerProvider: AdIntelProvider = {
       networks: DEFAULT_NETWORKS,
       ad_types: DEFAULT_AD_TYPES,
       display_breakdown: "true",
-      limit,
+      limit: apiLimit,
     };
 
     let raw: unknown;
     try {
       raw = await stFetch(`/v1/unified/ad_intel/creatives`, baseParams);
-    } catch (e) {
-      // Fall back to a narrower US-only TikTok+Facebook query.
+    } catch {
+      // Fall back to a narrower US-only Facebook+TikTok query.
       raw = await stFetch(`/v1/unified/ad_intel/creatives`, {
         ...baseParams,
         countries: "US",
-        networks: "TikTok,Facebook",
+        networks: "Facebook,TikTok",
         start_date: isoDaysAgo(30),
       });
     }
 
-    const root = raw as Record<string, unknown>;
-    const list = (root.creatives ??
+    const root = (raw ?? {}) as Record<string, unknown>;
+    // Sensor Tower returns `ad_units: [...]` as the canonical list.
+    const list = (root.ad_units ??
+      root.creatives ??
       root.data ??
       root.results ??
       (Array.isArray(raw) ? raw : [])) as unknown[];
-    const arr = Array.isArray(list) ? list : [];
+    const arr = (Array.isArray(list) ? list : []) as Record<string, unknown>[];
+
+    // Sort by share of voice descending so tier ranking is meaningful.
+    arr.sort((a, b) => Number(b.share ?? 0) - Number(a.share ?? 0));
 
     // Try to enrich vertical via app metadata.
     let vertical = "";
@@ -159,50 +166,50 @@ export const sensorTowerProvider: AdIntelProvider = {
       // optional
     }
 
-    const ads: AdCreative[] = arr.slice(0, limit).map((row, idx) => {
-      const r = row as Record<string, unknown>;
-      const network = (r.network ??
-        r.ad_network ??
-        r.publisher_network ??
-        "Unknown") as string;
-      const impressions = Number(
-        r.impressions ?? r.share_of_voice ?? r.share ?? r.spend ?? 0
-      ) || undefined;
+    const ads: AdCreative[] = arr.slice(0, limit).map((unit, idx) => {
+      // Each ad_unit holds one or more `creatives` (asset variants).
+      const creatives = (unit.creatives as Record<string, unknown>[] | undefined) ?? [];
+      const first = creatives[0] ?? {};
 
-      // Asset URLs — Sensor Tower returns various keys per asset type.
-      const thumbnailUrl = (r.thumbnail_url ??
-        r.preview_url ??
-        r.image_url ??
-        r.creative_url ??
-        r.asset_thumbnail_url) as string | undefined;
-      const videoUrl = (r.video_url ??
-        r.asset_url ??
-        r.creative_video_url) as string | undefined;
+      const network = (unit.network ?? "Unknown") as string;
+      const adType = (unit.ad_type ?? "") as string;
+      const share = Number(unit.share ?? 0);
 
-      vertical = vertical || ((r.category ?? r.genre ?? "") as string);
+      // Asset URLs — choose the friendliest preview for each asset type.
+      const thumb = (first.thumb_url ??
+        first.preview_url ??
+        first.creative_url) as string | undefined;
+      const isVideo = adType.includes("video") || Number(first.video_duration ?? 0) > 0;
+      const videoUrl = isVideo
+        ? ((first.creative_url ?? first.preview_url) as string | undefined)
+        : undefined;
+
+      // Days running between first_seen_at / last_seen_at on the ad_unit.
+      let durationDays: number | undefined;
+      const firstSeen = unit.first_seen_at as string | undefined;
+      const lastSeen = unit.last_seen_at as string | undefined;
+      if (firstSeen && lastSeen) {
+        const ms = Date.parse(lastSeen) - Date.parse(firstSeen);
+        if (Number.isFinite(ms) && ms >= 0) durationDays = Math.round(ms / 86400000);
+      }
+
+      const message = (first.message as string | undefined)?.trim();
 
       return {
-        id: String(r.creative_id ?? r.id ?? r.asset_id ?? `ad-${idx}`),
-        thumbnailUrl,
+        id: String(unit.id ?? unit.phashion_group ?? `ad-${idx}`),
+        thumbnailUrl: thumb,
         videoUrl,
         network,
-        hookLabel: (r.hook ??
-          r.title ??
-          r.headline ??
-          r.ad_text ??
-          `Creative ${idx + 1}`) as string,
-        firstSeen: (r.first_seen_at ?? r.first_seen ?? r.start_date) as
-          | string
-          | undefined,
-        lastSeen: (r.last_seen_at ?? r.last_seen ?? r.end_date) as
-          | string
-          | undefined,
-        estImpressions: impressions,
-        durationDays: Number(r.duration ?? r.days_running) || undefined,
+        hookLabel: message && message.length > 0
+          ? message.slice(0, 80)
+          : `${network} ${adType || "creative"} #${idx + 1}`,
+        firstSeen,
+        lastSeen,
+        // `share` is share-of-voice (0–1). Scale to a pseudo impressions number for display.
+        estImpressions: share > 0 ? Math.round(share * 1_000_000) : undefined,
+        durationDays,
         tier: rankToTier(idx, arr.length),
-        rawText: (r.description ?? r.transcript ?? r.ad_text ?? r.text) as
-          | string
-          | undefined,
+        rawText: message,
       };
     });
 
