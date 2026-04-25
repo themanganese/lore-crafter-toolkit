@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
   Loader2, RefreshCw, Share2, Skull, Sword, Coins, TrendingUp, Sparkles,
-  Hammer, Image as ImageIcon, ScrollText, Trash2,
+  Hammer, Image as ImageIcon, ScrollText, Trash2, Lightbulb,
 } from "lucide-react";
 import { useCharacter } from "@/hooks/use-characters";
 import { saveCharacter, deleteCharacter } from "@/lib/store";
