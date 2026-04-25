@@ -1,38 +1,45 @@
-// SensorTower Ad Intelligence adapter.
-// Server-only — never import in client code.
+// SensorTower Ad Intelligence adapter — server-only.
+// Aligned to the unified v1 endpoints documented in the official Postman
+// collection. Auth is via `auth_token` query parameter (NOT Bearer).
 //
-// Endpoints used (SensorTower API v1):
-//   GET /v1/{platform}/search_entities?term=...&entity_type=app
-//   GET /v1/{platform}/ad_intel/network_analysis/creatives
-//
-// Auth: Authorization: Bearer ${SENSORTOWER_API_KEY}
-//
-// SensorTower's response shapes vary by plan tier. We defensively normalize
-// what we need and surface a graceful error otherwise.
+// Endpoints used:
+//   GET /v1/unified/search_entities?entity_type=app&term=...
+//   GET /v1/unified/ad_intel/creatives?app_ids=...&start_date=...&end_date=...
+//   GET /v1/unified/apps?app_ids=...&app_id_type=unified  (metadata enrichment)
 
 import type { AdCreative } from "../types";
 import { rankToTier, type AdIntelProvider, type GameSearchResult } from "./types";
 
 const ST_BASE = "https://api.sensortower.com";
 
-function authHeaders() {
+// Default networks & ad types — broad coverage so every vertical returns data.
+const DEFAULT_NETWORKS =
+  "TikTok,Facebook,Instagram,Unity,Admob,Applovin,Mintegral,Pangle,Youtube";
+const DEFAULT_AD_TYPES =
+  "video,video-interstitial,playable,image,banner,full_screen";
+const DEFAULT_COUNTRIES = "US,GB,CA,AU,DE,FR,JP";
+
+function authToken() {
   const key = process.env.SENSORTOWER_API_KEY;
   if (!key) throw new Error("SENSORTOWER_API_KEY is not configured");
-  return {
-    Authorization: `Bearer ${key}`,
-    Accept: "application/json",
-  };
+  return key;
 }
 
-async function stFetch(path: string, params: Record<string, string | number | undefined>) {
+async function stFetch(
+  path: string,
+  params: Record<string, string | number | undefined>
+) {
   const url = new URL(ST_BASE + path);
   for (const [k, v] of Object.entries(params)) {
     if (v !== undefined && v !== null && v !== "") url.searchParams.set(k, String(v));
   }
-  const res = await fetch(url.toString(), { headers: authHeaders() });
+  url.searchParams.set("auth_token", authToken());
+  const res = await fetch(url.toString(), { headers: { Accept: "application/json" } });
   const text = await res.text();
   if (!res.ok) {
-    throw new Error(`SensorTower ${res.status} ${res.statusText} on ${path}: ${text.slice(0, 240)}`);
+    throw new Error(
+      `SensorTower ${res.status} on ${path}: ${text.slice(0, 240)}`
+    );
   }
   try {
     return JSON.parse(text);
@@ -41,37 +48,17 @@ async function stFetch(path: string, params: Record<string, string | number | un
   }
 }
 
-// Try iOS first, fall back to Android.
-async function searchOnePlatform(
-  query: string,
-  platform: "ios" | "android"
-): Promise<GameSearchResult[]> {
-  try {
-    const data = await stFetch(`/v1/${platform}/search_entities`, {
-      term: query,
-      entity_type: "app",
-      limit: 10,
-    });
-    const apps = (data?.apps ?? data?.results ?? data ?? []) as unknown[];
-    return (Array.isArray(apps) ? apps : [])
-      .map((app) => {
-        const a = app as Record<string, unknown>;
-        const id = (a.app_id ?? a.id ?? a.bundle_id) as string | number | undefined;
-        if (!id) return null;
-        return {
-          externalId: String(id),
-          platform,
-          name: (a.name ?? a.title ?? "Unknown") as string,
-          publisher: (a.publisher_name ?? a.publisher ?? a.developer_name) as string | undefined,
-          iconUrl: (a.icon ?? a.icon_url ?? a.image_url) as string | undefined,
-          vertical: (a.category ?? a.primary_category ?? a.genre) as string | undefined,
-        } as GameSearchResult;
-      })
-      .filter(Boolean) as GameSearchResult[];
-  } catch (e) {
-    console.warn(`SensorTower search ${platform} failed:`, e);
-    return [];
-  }
+function isoDaysAgo(days: number) {
+  const d = new Date();
+  d.setUTCDate(d.getUTCDate() - days);
+  return d.toISOString().slice(0, 10);
+}
+
+function pickPlatform(app: Record<string, unknown>): "ios" | "android" {
+  const os = (app.os ?? app.platform ?? app.primary_platform) as string | undefined;
+  if (typeof os === "string" && os.toLowerCase().includes("android")) return "android";
+  // Unified results sometimes carry both — default to ios for ranking display.
+  return "ios";
 }
 
 export const sensorTowerProvider: AdIntelProvider = {
@@ -80,61 +67,142 @@ export const sensorTowerProvider: AdIntelProvider = {
   async searchGames(query: string) {
     const trimmed = query.trim();
     if (!trimmed) return [];
-    const [ios, android] = await Promise.all([
-      searchOnePlatform(trimmed, "ios"),
-      searchOnePlatform(trimmed, "android"),
-    ]);
-    // Dedupe by name+publisher, prefer iOS result first
+
+    const data = await stFetch(`/v1/unified/search_entities`, {
+      entity_type: "app",
+      term: trimmed,
+      limit: 12,
+    });
+
+    // Unified search returns an array of apps directly, or under a key.
+    const list = (Array.isArray(data) ? data : data?.apps ?? data?.results ?? []) as unknown[];
+
     const seen = new Set<string>();
-    const merged: GameSearchResult[] = [];
-    for (const r of [...ios, ...android]) {
-      const key = `${r.name}::${r.publisher ?? ""}`.toLowerCase();
+    const out: GameSearchResult[] = [];
+    for (const item of list) {
+      const a = item as Record<string, unknown>;
+      const id =
+        (a.unified_app_id ?? a.app_id ?? a.id ?? a.entity_id) as
+          | string
+          | number
+          | undefined;
+      if (!id) continue;
+      const key = String(id);
       if (seen.has(key)) continue;
       seen.add(key);
-      merged.push(r);
+      out.push({
+        externalId: key,
+        platform: pickPlatform(a),
+        name: (a.name ?? a.title ?? "Unknown") as string,
+        publisher: (a.publisher_name ??
+          a.publisher ??
+          a.unified_publisher_name ??
+          a.developer_name) as string | undefined,
+        iconUrl: (a.icon ?? a.icon_url ?? a.image_url) as string | undefined,
+        vertical: (a.category_name ??
+          a.primary_category ??
+          a.category ??
+          a.genre) as string | undefined,
+      });
     }
-    return merged.slice(0, 12);
+    return out;
   },
 
-  async fetchTopAds({ externalId, platform, limit = 24 }) {
+  async fetchTopAds({ externalId, limit = 24 }) {
+    // Try wide window first (90 days, multi-country, all major networks).
+    const baseParams = {
+      app_ids: externalId,
+      start_date: isoDaysAgo(90),
+      end_date: isoDaysAgo(0),
+      countries: DEFAULT_COUNTRIES,
+      networks: DEFAULT_NETWORKS,
+      ad_types: DEFAULT_AD_TYPES,
+      display_breakdown: "true",
+      limit,
+    };
+
     let raw: unknown;
     try {
-      raw = await stFetch(`/v1/${platform}/ad_intel/network_analysis/creatives`, {
-        app_ids: externalId,
-        period: "month",
-        limit,
-      });
+      raw = await stFetch(`/v1/unified/ad_intel/creatives`, baseParams);
     } catch (e) {
-      // Fallback to generic top creatives endpoint name
-      raw = await stFetch(`/v1/${platform}/ad_intel/creatives`, {
-        app_ids: externalId,
-        limit,
+      // Fall back to a narrower US-only TikTok+Facebook query.
+      raw = await stFetch(`/v1/unified/ad_intel/creatives`, {
+        ...baseParams,
+        countries: "US",
+        networks: "TikTok,Facebook",
+        start_date: isoDaysAgo(30),
       });
     }
 
     const root = raw as Record<string, unknown>;
-    const list = (root.creatives ?? root.data ?? root.results ?? raw ?? []) as unknown[];
+    const list = (root.creatives ??
+      root.data ??
+      root.results ??
+      (Array.isArray(raw) ? raw : [])) as unknown[];
     const arr = Array.isArray(list) ? list : [];
 
+    // Try to enrich vertical via app metadata.
     let vertical = "";
+    try {
+      const meta = await stFetch(`/v1/unified/apps`, {
+        app_ids: externalId,
+        app_id_type: "unified",
+      });
+      const apps = (meta?.apps ?? (Array.isArray(meta) ? meta : [])) as unknown[];
+      const first = apps?.[0] as Record<string, unknown> | undefined;
+      vertical = ((first?.category_name ??
+        first?.primary_category ??
+        first?.category ??
+        first?.genre ??
+        "") as string) || "";
+    } catch {
+      // optional
+    }
 
     const ads: AdCreative[] = arr.slice(0, limit).map((row, idx) => {
       const r = row as Record<string, unknown>;
+      const network = (r.network ??
+        r.ad_network ??
+        r.publisher_network ??
+        "Unknown") as string;
+      const impressions = Number(
+        r.impressions ?? r.share_of_voice ?? r.share ?? r.spend ?? 0
+      ) || undefined;
+
+      // Asset URLs — Sensor Tower returns various keys per asset type.
+      const thumbnailUrl = (r.thumbnail_url ??
+        r.preview_url ??
+        r.image_url ??
+        r.creative_url ??
+        r.asset_thumbnail_url) as string | undefined;
+      const videoUrl = (r.video_url ??
+        r.asset_url ??
+        r.creative_video_url) as string | undefined;
+
       vertical = vertical || ((r.category ?? r.genre ?? "") as string);
-      const impressions = Number(r.impressions ?? r.estimated_impressions ?? r.share ?? 0) || undefined;
-      const network = (r.network ?? r.ad_network ?? r.platform ?? "Unknown") as string;
+
       return {
-        id: String(r.creative_id ?? r.id ?? `ad-${idx}`),
-        thumbnailUrl: (r.thumbnail_url ?? r.preview_url ?? r.image_url) as string | undefined,
-        videoUrl: (r.video_url ?? r.asset_url) as string | undefined,
+        id: String(r.creative_id ?? r.id ?? r.asset_id ?? `ad-${idx}`),
+        thumbnailUrl,
+        videoUrl,
         network,
-        hookLabel: (r.hook ?? r.title ?? r.headline ?? `Creative ${idx + 1}`) as string,
-        firstSeen: (r.first_seen ?? r.first_seen_at) as string | undefined,
-        lastSeen: (r.last_seen ?? r.last_seen_at) as string | undefined,
+        hookLabel: (r.hook ??
+          r.title ??
+          r.headline ??
+          r.ad_text ??
+          `Creative ${idx + 1}`) as string,
+        firstSeen: (r.first_seen_at ?? r.first_seen ?? r.start_date) as
+          | string
+          | undefined,
+        lastSeen: (r.last_seen_at ?? r.last_seen ?? r.end_date) as
+          | string
+          | undefined,
         estImpressions: impressions,
         durationDays: Number(r.duration ?? r.days_running) || undefined,
         tier: rankToTier(idx, arr.length),
-        rawText: (r.description ?? r.transcript ?? r.text) as string | undefined,
+        rawText: (r.description ?? r.transcript ?? r.ad_text ?? r.text) as
+          | string
+          | undefined,
       };
     });
 
