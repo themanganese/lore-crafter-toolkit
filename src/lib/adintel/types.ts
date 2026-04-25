@@ -1,5 +1,5 @@
 // Provider-adapter interface so we can swap ad intelligence sources later.
-import type { AdCreative, Tier } from "./types";
+import type { AdCreative, Tier } from "../types";
 
 export interface GameSearchResult {
   externalId: string;
