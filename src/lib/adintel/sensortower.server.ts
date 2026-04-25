@@ -128,8 +128,8 @@ export const sensorTowerProvider: AdIntelProvider = {
     return out;
   },
 
-  async fetchTopAds({ externalId, limit = 24 }) {
-    const resolvedExternalId = await resolveUnifiedAppId(externalId, arguments[0].platform);
+  async fetchTopAds({ externalId, platform, limit = 24 }) {
+    const resolvedExternalId = await resolveUnifiedAppId(externalId, platform);
 
     // SensorTower's `limit` param only accepts {10, 50, 100}.
     const apiLimit = limit <= 10 ? 10 : limit <= 50 ? 50 : 100;
