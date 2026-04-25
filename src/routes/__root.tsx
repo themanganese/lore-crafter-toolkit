@@ -1,7 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 import { Roster } from "@/components/Roster";
-import { AskAIFloating } from "@/components/AskAIFloating";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -31,20 +30,26 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Forge by Silki — Ad Intelligence × Creative Anvil" },
+      { title: "CreatorForge — Ad Intelligence × Creative Anvil" },
       {
         name: "description",
         content:
-          "Analyze top-performing game ads, build a character sheet of winning patterns, and generate tailored creatives — all in one dashboard.",
+          "Analyze top-performing game ads, forge a soulslike character sheet of winning patterns, and generate tailored creatives in one pipeline.",
       },
-      { name: "author", content: "Silki" },
-      { property: "og:title", content: "Forge by Silki" },
+      { name: "author", content: "CreatorForge" },
+      { property: "og:title", content: "CreatorForge — Ad Intelligence × Creative Anvil" },
       {
         property: "og:description",
-        content: "Ad intelligence and creative generation in one game-sheet dashboard.",
+        content: "Ad intelligence and creative generation in one grim pipeline.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "CreatorForge — Ad Intelligence × Creative Anvil" },
+      { name: "description", content: "Forge by Silki is a game development tool for creating character sheets and analyzing game data." },
+      { property: "og:description", content: "Forge by Silki is a game development tool for creating character sheets and analyzing game data." },
+      { name: "twitter:description", content: "Forge by Silki is a game development tool for creating character sheets and analyzing game data." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/aeddca08-e984-498b-8914-527fec265f33/id-preview-9cf3a119--0993e6e9-e2ac-4493-98e4-db1c6c53965f.lovable.app-1777130499289.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/aeddca08-e984-498b-8914-527fec265f33/id-preview-9cf3a119--0993e6e9-e2ac-4493-98e4-db1c6c53965f.lovable.app-1777130499289.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -61,7 +66,7 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <HeadContent />
       </head>
@@ -80,7 +85,6 @@ function RootComponent() {
       <main className="flex-1 min-w-0">
         <Outlet />
       </main>
-      <AskAIFloating />
       <Toaster />
     </div>
   );
