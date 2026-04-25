@@ -9,38 +9,119 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ShareRouteImport } from './routes/share'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CharacterGameIdRouteImport } from './routes/character.$gameId'
+import { Route as CharacterGameIdBriefRouteImport } from './routes/character.$gameId.brief'
+import { Route as CharacterGameIdAnvilRouteImport } from './routes/character.$gameId.anvil'
 
+const ShareRoute = ShareRouteImport.update({
+  id: '/share',
+  path: '/share',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CharacterGameIdRoute = CharacterGameIdRouteImport.update({
+  id: '/character/$gameId',
+  path: '/character/$gameId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CharacterGameIdBriefRoute = CharacterGameIdBriefRouteImport.update({
+  id: '/brief',
+  path: '/brief',
+  getParentRoute: () => CharacterGameIdRoute,
+} as any)
+const CharacterGameIdAnvilRoute = CharacterGameIdAnvilRouteImport.update({
+  id: '/anvil',
+  path: '/anvil',
+  getParentRoute: () => CharacterGameIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/settings': typeof SettingsRoute
+  '/share': typeof ShareRoute
+  '/character/$gameId': typeof CharacterGameIdRouteWithChildren
+  '/character/$gameId/anvil': typeof CharacterGameIdAnvilRoute
+  '/character/$gameId/brief': typeof CharacterGameIdBriefRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/settings': typeof SettingsRoute
+  '/share': typeof ShareRoute
+  '/character/$gameId': typeof CharacterGameIdRouteWithChildren
+  '/character/$gameId/anvil': typeof CharacterGameIdAnvilRoute
+  '/character/$gameId/brief': typeof CharacterGameIdBriefRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/settings': typeof SettingsRoute
+  '/share': typeof ShareRoute
+  '/character/$gameId': typeof CharacterGameIdRouteWithChildren
+  '/character/$gameId/anvil': typeof CharacterGameIdAnvilRoute
+  '/character/$gameId/brief': typeof CharacterGameIdBriefRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/settings'
+    | '/share'
+    | '/character/$gameId'
+    | '/character/$gameId/anvil'
+    | '/character/$gameId/brief'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/settings'
+    | '/share'
+    | '/character/$gameId'
+    | '/character/$gameId/anvil'
+    | '/character/$gameId/brief'
+  id:
+    | '__root__'
+    | '/'
+    | '/settings'
+    | '/share'
+    | '/character/$gameId'
+    | '/character/$gameId/anvil'
+    | '/character/$gameId/brief'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SettingsRoute: typeof SettingsRoute
+  ShareRoute: typeof ShareRoute
+  CharacterGameIdRoute: typeof CharacterGameIdRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/share': {
+      id: '/share'
+      path: '/share'
+      fullPath: '/share'
+      preLoaderRoute: typeof ShareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,21 +129,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/character/$gameId': {
+      id: '/character/$gameId'
+      path: '/character/$gameId'
+      fullPath: '/character/$gameId'
+      preLoaderRoute: typeof CharacterGameIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/character/$gameId/brief': {
+      id: '/character/$gameId/brief'
+      path: '/brief'
+      fullPath: '/character/$gameId/brief'
+      preLoaderRoute: typeof CharacterGameIdBriefRouteImport
+      parentRoute: typeof CharacterGameIdRoute
+    }
+    '/character/$gameId/anvil': {
+      id: '/character/$gameId/anvil'
+      path: '/anvil'
+      fullPath: '/character/$gameId/anvil'
+      preLoaderRoute: typeof CharacterGameIdAnvilRouteImport
+      parentRoute: typeof CharacterGameIdRoute
+    }
   }
 }
 
+interface CharacterGameIdRouteChildren {
+  CharacterGameIdAnvilRoute: typeof CharacterGameIdAnvilRoute
+  CharacterGameIdBriefRoute: typeof CharacterGameIdBriefRoute
+}
+
+const CharacterGameIdRouteChildren: CharacterGameIdRouteChildren = {
+  CharacterGameIdAnvilRoute: CharacterGameIdAnvilRoute,
+  CharacterGameIdBriefRoute: CharacterGameIdBriefRoute,
+}
+
+const CharacterGameIdRouteWithChildren = CharacterGameIdRoute._addFileChildren(
+  CharacterGameIdRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SettingsRoute: SettingsRoute,
+  ShareRoute: ShareRoute,
+  CharacterGameIdRoute: CharacterGameIdRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
