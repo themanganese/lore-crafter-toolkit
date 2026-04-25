@@ -18,11 +18,11 @@ export function Roster() {
         <div className="flex items-center gap-2">
           <Flame className="h-5 w-5 text-gold ember-flicker" />
           <span className="font-display text-lg tracking-wider text-gradient-gold">
-            CreatorForge
+            Forge
           </span>
         </div>
         <p className="font-mono text-[10px] text-muted-foreground mt-1 uppercase tracking-widest">
-          Ad Intel × Anvil
+          by Silki
         </p>
       </button>
 

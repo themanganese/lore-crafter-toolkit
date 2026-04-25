@@ -66,6 +66,9 @@ function ForgePage() {
       codex: [],
       briefs: [],
       generations: [],
+      aiThoughts: [],
+      gallery: [],
+      chatMessages: [],
     };
     await saveCharacter(character);
     navigate({ to: "/character/$gameId", params: { gameId: id } });

@@ -4,8 +4,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* CreatorForge — Dark Souls grim design system.
- * Black + gold, weathered, ominous. Use only semantic tokens — never hex in components.
+/* Forge by Silki — light parchment + warm gold game-sheet design system.
+ * Inspired by Assassin's Creed inventory screens: cream parchment, copper rules,
+ * elegant gold-framed hero panels. Use only semantic tokens in components.
  */
 
 @theme inline {
@@ -40,6 +41,7 @@
   --color-gold-bright: var(--gold-bright);
   --color-gold-dim: var(--gold-dim);
   --color-bronze: var(--bronze);
+  --color-copper: var(--copper);
   --color-iron: var(--iron);
   --color-ash: var(--ash);
   --color-ember: var(--ember);
@@ -52,8 +54,8 @@
   --color-tier-d: var(--ash);
 
   --color-chart-1: var(--gold);
-  --color-chart-2: var(--bronze);
-  --color-chart-3: var(--ember);
+  --color-chart-2: var(--copper);
+  --color-chart-3: var(--bronze);
   --color-chart-4: var(--gold-dim);
   --color-chart-5: var(--iron);
 
@@ -61,61 +63,68 @@
   --font-body: "Inter", "Helvetica Neue", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
 
-  --shadow-glow: 0 0 24px color-mix(in oklab, var(--gold) 35%, transparent);
-  --shadow-panel: 0 8px 32px oklch(0 0 0 / 0.6), inset 0 1px 0 color-mix(in oklab, var(--gold) 10%, transparent);
+  --shadow-glow: 0 0 24px color-mix(in oklab, var(--gold) 28%, transparent);
+  --shadow-panel: 0 1px 0 0 color-mix(in oklab, var(--gold) 10%, transparent),
+                  0 8px 24px -12px color-mix(in oklab, var(--bronze) 35%, transparent);
 }
 
-:root,
-.dark {
-  --radius: 0.25rem;
+:root {
+  --radius: 0.4rem;
 
-  /* Grim base */
-  --background: oklch(0.12 0.005 60);          /* near-black warm */
-  --foreground: oklch(0.88 0.02 70);           /* aged ivory */
+  /* Parchment base */
+  --background: oklch(0.96 0.015 80);            /* warm cream */
+  --foreground: oklch(0.22 0.02 60);             /* warm charcoal */
 
-  --card: oklch(0.16 0.008 60);                /* panel */
-  --card-foreground: oklch(0.88 0.02 70);
+  --card: oklch(0.99 0.008 85);                  /* ivory panel */
+  --card-foreground: oklch(0.22 0.02 60);
 
-  --popover: oklch(0.14 0.006 60);
-  --popover-foreground: oklch(0.88 0.02 70);
+  --popover: oklch(0.99 0.008 85);
+  --popover-foreground: oklch(0.22 0.02 60);
 
-  --primary: oklch(0.78 0.13 82);              /* gold */
-  --primary-foreground: oklch(0.12 0.01 60);
+  --primary: oklch(0.62 0.15 70);                /* deep amber gold */
+  --primary-foreground: oklch(0.99 0.005 80);
 
-  --secondary: oklch(0.22 0.01 60);
-  --secondary-foreground: oklch(0.85 0.02 70);
+  --secondary: oklch(0.92 0.02 80);              /* light parchment */
+  --secondary-foreground: oklch(0.28 0.02 60);
 
-  --muted: oklch(0.18 0.005 60);
-  --muted-foreground: oklch(0.55 0.015 70);
+  --muted: oklch(0.93 0.015 80);
+  --muted-foreground: oklch(0.45 0.02 60);
 
-  --accent: oklch(0.78 0.13 82);
-  --accent-foreground: oklch(0.12 0.01 60);
+  --accent: oklch(0.55 0.18 45);                 /* copper accent for CTAs */
+  --accent-foreground: oklch(0.99 0.005 80);
 
-  --destructive: oklch(0.55 0.18 25);
-  --destructive-foreground: oklch(0.95 0.01 70);
+  --destructive: oklch(0.55 0.2 25);
+  --destructive-foreground: oklch(0.99 0.005 80);
 
-  --border: oklch(0.28 0.02 70 / 0.5);         /* gold-tinged faint */
-  --input: oklch(0.22 0.01 60);
-  --ring: oklch(0.78 0.13 82 / 0.6);
+  --border: oklch(0.62 0.08 70 / 0.32);          /* gold-tinted hairline */
+  --input: oklch(0.97 0.01 80);
+  --ring: oklch(0.62 0.15 70 / 0.5);
 
   /* Brand-specific */
-  --gold: oklch(0.78 0.13 82);                 /* #c9a84c-ish */
-  --gold-bright: oklch(0.88 0.12 88);          /* #f0d78c */
-  --gold-dim: oklch(0.55 0.09 80);
-  --bronze: oklch(0.58 0.11 50);
-  --iron: oklch(0.45 0.01 60);
-  --ash: oklch(0.32 0.005 60);
-  --ember: oklch(0.62 0.21 35);                /* fiery */
-  --parchment: oklch(0.92 0.04 85);
+  --gold: oklch(0.62 0.15 70);
+  --gold-bright: oklch(0.78 0.16 80);            /* hero gold */
+  --gold-dim: oklch(0.5 0.08 70);
+  --bronze: oklch(0.55 0.12 55);
+  --copper: oklch(0.55 0.18 45);
+  --iron: oklch(0.55 0.015 70);
+  --ash: oklch(0.7 0.01 70);
+  --ember: oklch(0.62 0.21 35);
+  --parchment: oklch(0.94 0.025 85);
 
-  --sidebar: oklch(0.14 0.006 60);
-  --sidebar-foreground: oklch(0.85 0.02 70);
-  --sidebar-primary: oklch(0.78 0.13 82);
-  --sidebar-primary-foreground: oklch(0.12 0.01 60);
-  --sidebar-accent: oklch(0.18 0.005 60);
-  --sidebar-accent-foreground: oklch(0.85 0.02 70);
-  --sidebar-border: oklch(0.28 0.02 70 / 0.4);
-  --sidebar-ring: oklch(0.78 0.13 82 / 0.6);
+  --sidebar: oklch(0.94 0.018 80);
+  --sidebar-foreground: oklch(0.28 0.02 60);
+  --sidebar-primary: oklch(0.62 0.15 70);
+  --sidebar-primary-foreground: oklch(0.99 0.005 80);
+  --sidebar-accent: oklch(0.96 0.015 80);
+  --sidebar-accent-foreground: oklch(0.28 0.02 60);
+  --sidebar-border: oklch(0.62 0.08 70 / 0.28);
+  --sidebar-ring: oklch(0.62 0.15 70 / 0.5);
+}
+
+.dark {
+  /* Dark variant kept consistent for shadcn primitives that read .dark */
+  --background: oklch(0.96 0.015 80);
+  --foreground: oklch(0.22 0.02 60);
 }
 
 @layer base {
@@ -123,13 +132,18 @@
     border-color: var(--color-border);
   }
 
-  body {
+  html, body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+  }
+
+  body {
     font-family: var(--font-body);
     background-image:
-      radial-gradient(ellipse at top, color-mix(in oklab, var(--gold) 5%, transparent) 0%, transparent 50%),
-      radial-gradient(ellipse at bottom, color-mix(in oklab, var(--ember) 4%, transparent) 0%, transparent 60%);
+      /* paper grain */
+      radial-gradient(circle at 25% 15%, color-mix(in oklab, var(--bronze) 5%, transparent) 0%, transparent 30%),
+      radial-gradient(circle at 75% 85%, color-mix(in oklab, var(--gold) 6%, transparent) 0%, transparent 35%),
+      radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--parchment) 60%, transparent) 0%, transparent 70%);
     background-attachment: fixed;
   }
 
@@ -140,35 +154,36 @@
 }
 
 @layer utilities {
+  /* Light parchment panel with hairline gold rule + soft shadow */
   .panel-grim {
-    background: linear-gradient(180deg,
-      color-mix(in oklab, var(--card) 100%, transparent) 0%,
-      color-mix(in oklab, var(--background) 100%, transparent) 100%);
+    background: var(--card);
     border: 1px solid color-mix(in oklab, var(--gold) 22%, transparent);
+    border-radius: var(--radius);
     box-shadow: var(--shadow-panel);
     position: relative;
   }
 
-  .panel-grim::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-      linear-gradient(135deg, color-mix(in oklab, var(--gold) 8%, transparent) 0%, transparent 30%),
-      linear-gradient(315deg, color-mix(in oklab, var(--gold) 6%, transparent) 0%, transparent 30%);
-    mix-blend-mode: overlay;
+  /* AC-style elegant double gold frame */
+  .gold-frame {
+    border: 1px solid color-mix(in oklab, var(--gold) 45%, transparent);
+    border-radius: var(--radius);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, var(--card) 100%, transparent),
+      inset 0 0 0 2px color-mix(in oklab, var(--gold) 28%, transparent),
+      0 1px 0 color-mix(in oklab, var(--gold) 10%, transparent);
+    background: color-mix(in oklab, var(--card) 100%, transparent);
   }
 
-  .gold-frame {
-    border: 1px double color-mix(in oklab, var(--gold) 50%, transparent);
+  .gold-frame-strong {
+    border: 1px solid color-mix(in oklab, var(--gold) 60%, transparent);
     box-shadow:
       inset 0 0 0 1px color-mix(in oklab, var(--background) 100%, transparent),
-      inset 0 0 0 2px color-mix(in oklab, var(--gold) 30%, transparent);
+      inset 0 0 0 3px color-mix(in oklab, var(--gold) 40%, transparent),
+      0 4px 16px -8px color-mix(in oklab, var(--bronze) 40%, transparent);
   }
 
   .text-gradient-gold {
-    background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 60%, var(--bronze) 100%);
+    background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 55%, var(--bronze) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -186,11 +201,11 @@
   @keyframes pulse-gold {
     0%, 100% {
       box-shadow: 0 0 0 0 color-mix(in oklab, var(--gold-bright) 0%, transparent),
-                  0 0 16px color-mix(in oklab, var(--gold) 35%, transparent);
+                  0 0 12px color-mix(in oklab, var(--gold) 30%, transparent);
     }
     50% {
       box-shadow: 0 0 0 6px color-mix(in oklab, var(--gold-bright) 0%, transparent),
-                  0 0 28px color-mix(in oklab, var(--gold-bright) 55%, transparent);
+                  0 0 22px color-mix(in oklab, var(--gold-bright) 50%, transparent);
     }
   }
 
@@ -199,27 +214,35 @@
   }
 
   @keyframes ember {
-    0%, 100% { opacity: 0.65; }
+    0%, 100% { opacity: 0.75; }
     50% { opacity: 1; }
-  }
-
-  .scanline-overlay::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: repeating-linear-gradient(
-      to bottom,
-      transparent 0px,
-      transparent 2px,
-      color-mix(in oklab, var(--gold) 3%, transparent) 3px,
-      transparent 4px
-    );
   }
 
   .parchment-bg {
     background:
-      radial-gradient(ellipse at center, color-mix(in oklab, var(--parchment) 4%, transparent) 0%, transparent 70%),
+      radial-gradient(ellipse at center, color-mix(in oklab, var(--parchment) 60%, transparent) 0%, transparent 70%),
       var(--card);
+  }
+
+  /* Copper CTA button */
+  .btn-copper {
+    background: linear-gradient(180deg, var(--copper), color-mix(in oklab, var(--copper) 85%, var(--bronze)));
+    color: var(--accent-foreground);
+    border: 1px solid color-mix(in oklab, var(--copper) 80%, var(--bronze));
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, white 25%, transparent),
+      0 1px 2px color-mix(in oklab, var(--bronze) 30%, transparent);
+    transition: filter 0.15s ease;
+  }
+  .btn-copper:hover { filter: brightness(1.07); }
+  .btn-copper:disabled { filter: grayscale(0.4) brightness(0.95); cursor: not-allowed; }
+
+  /* Pulsing copper dot for "thinking" steps */
+  .think-pulse {
+    animation: think-pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes think-pulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.85); }
+    50% { opacity: 1; transform: scale(1.1); }
   }
 }

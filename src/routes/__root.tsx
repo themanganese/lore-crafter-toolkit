@@ -30,17 +30,17 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "CreatorForge — Ad Intelligence × Creative Anvil" },
+      { title: "Forge by Silki — Ad Intelligence × Creative Anvil" },
       {
         name: "description",
         content:
-          "Analyze top-performing game ads, forge a soulslike character sheet of winning patterns, and generate tailored creatives in one pipeline.",
+          "Analyze top-performing game ads, build a character sheet of winning patterns, and generate tailored creatives — all in one dashboard.",
       },
-      { name: "author", content: "CreatorForge" },
-      { property: "og:title", content: "CreatorForge" },
+      { name: "author", content: "Silki" },
+      { property: "og:title", content: "Forge by Silki" },
       {
         property: "og:description",
-        content: "Ad intelligence and creative generation in one grim pipeline.",
+        content: "Ad intelligence and creative generation in one game-sheet dashboard.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -60,7 +60,7 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <HeadContent />
       </head>
