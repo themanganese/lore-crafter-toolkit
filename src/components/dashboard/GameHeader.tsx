@@ -1,5 +1,6 @@
+import type { ReactNode } from "react";
 import { Skull, Sword, Shield, Crown, Sparkles, Target, Coins, TrendingUp } from "lucide-react";
-import type { GameCharacter } from "@/lib/types";
+import type { GameCharacter, Tier } from "@/lib/types";
 import { TierBadge } from "@/components/TierBadge";
 
 interface GameHeaderProps {
