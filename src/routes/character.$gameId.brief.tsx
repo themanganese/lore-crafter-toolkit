@@ -135,7 +135,7 @@ function BriefPage() {
             <Field label="Visual cue" value={form.visualCue} onChange={(v) => setForm({ ...form, visualCue: v })} multiline />
             <Field label="Pacing" value={form.pacing} onChange={(v) => setForm({ ...form, pacing: v })} multiline />
             <Field label="Call to action" value={form.cta} onChange={(v) => setForm({ ...form, cta: v })} />
-            <Field label="Notes" value={form.notes} onChange={(v) => setForm({ ...form, notes: v })} multiline />
+            <Field label="Notes" value={form.notes ?? ""} onChange={(v) => setForm({ ...form, notes: v })} multiline />
             <Field
               label="Scenario prompt (sent to image model)"
               value={form.prompt}
