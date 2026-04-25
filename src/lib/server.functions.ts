@@ -270,3 +270,76 @@ in that game's context first.${ctxBlock}`;
       return { ok: false as const, content: "", error: e instanceof Error ? e.message : "AI failed" };
     }
   });
+
+// ─── Inspired by Top Ads ──────────────────────────────────────────
+// Suggest 3 comparable games from the same vertical.
+export const suggestComparableGames = createServerFn({ method: "POST" })
+  .inputValidator(
+    z.object({
+      targetExternalId: z.string().min(1),
+      targetName: z.string().min(1),
+      vertical: z.string().default(""),
+      limit: z.number().int().min(1).max(6).optional(),
+    })
+  )
+  .handler(async ({ data }) => {
+    try {
+      const comparables = await suggestComparables({
+        targetExternalId: data.targetExternalId,
+        targetName: data.targetName,
+        vertical: data.vertical,
+        limit: data.limit,
+      });
+      return { ok: true as const, comparables, error: null };
+    } catch (e) {
+      console.error("suggestComparableGames failed:", e);
+      return {
+        ok: false as const,
+        comparables: [] as ComparableGame[],
+        error: e instanceof Error ? e.message : "Comparable lookup failed",
+      };
+    }
+  });
+
+// Pull top ads from the chosen comparables and synthesize 3-4 inspired briefs.
+export const generateInspiredBriefsFn = createServerFn({ method: "POST" })
+  .inputValidator(
+    z.object({
+      targetGameName: z.string().min(1).max(160),
+      vertical: z.string().default(""),
+      comparables: z
+        .array(
+          z.object({
+            externalId: z.string().min(1),
+            platform: z.enum(["ios", "android"]),
+            name: z.string().min(1),
+            publisher: z.string().optional(),
+            iconUrl: z.string().optional(),
+            vertical: z.string().optional(),
+          })
+        )
+        .min(1)
+        .max(5),
+      briefsCount: z.number().int().min(2).max(5).optional(),
+    })
+  )
+  .handler(async ({ data }) => {
+    try {
+      const r = await generateInspiredBriefs({
+        targetGameName: data.targetGameName,
+        vertical: data.vertical,
+        comparables: data.comparables,
+        briefsCount: data.briefsCount,
+      });
+      return { ok: true as const, ...r, error: null };
+    } catch (e) {
+      console.error("generateInspiredBriefsFn failed:", e);
+      return {
+        ok: false as const,
+        briefs: [] as InspiredBrief[],
+        comparablesUsed: [] as { name: string; adsCount: number }[],
+        failures: [] as { name: string; error: string }[],
+        error: e instanceof Error ? e.message : "Inspired brief generation failed",
+      };
+    }
+  });
