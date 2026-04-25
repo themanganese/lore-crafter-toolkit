@@ -1,11 +1,9 @@
-// AI insight extraction — runs server-side, calls Lovable AI Gateway.
-// Uses tool-calling for structured output (per-vertical inferred stats).
+// AI insight extraction — runs server-side, calls Claude via the shared helper.
+// Used by the legacy single-call analysis path and by draftBrief.
 
 import type { AdCreative, CharacterStat, Tier } from "../types";
 import { scoreToTier } from "../tier";
-
-const GATEWAY = "https://ai.gateway.lovable.dev/v1/chat/completions";
-const MODEL = "google/gemini-3-flash-preview";
+import { callAITool } from "@/lib/silki/ai.server";
 
 function tierClamp(t: string): Tier {
   return (["S", "A", "B", "C", "D"] as Tier[]).includes(t as Tier) ? (t as Tier) : "C";
@@ -21,10 +19,6 @@ export async function extractInsights(args: {
   codex: string[];
   refinedVertical: string;
 }> {
-  const key = process.env.LOVABLE_API_KEY;
-  if (!key) throw new Error("LOVABLE_API_KEY is not configured");
-
-  // Compact ad summary — keep payload small.
   const adSummary = args.ads.slice(0, 24).map((a, i) => ({
     rank: i + 1,
     network: a.network,
@@ -49,102 +43,68 @@ Refine the vertical name into a tight 2-4 word label.
 
 Be ruthless and specific. Cite signal from the ad list.`;
 
-  const tools = [
-    {
-      type: "function",
-      function: {
-        name: "submit_character_sheet",
-        description: "Return the structured character sheet",
-        parameters: {
-          type: "object",
-          properties: {
-            refined_vertical: { type: "string" },
-            stats: {
-              type: "array",
-              minItems: 5,
-              maxItems: 7,
-              items: {
-                type: "object",
-                properties: {
-                  key: { type: "string", description: "snake_case slug" },
-                  label: { type: "string" },
-                  value: { type: "number", minimum: 0, maximum: 100 },
-                  lore: { type: "string" },
-                },
-                required: ["key", "label", "value", "lore"],
-                additionalProperties: false,
-              },
-            },
-            top_hooks: {
-              type: "array",
-              minItems: 3,
-              maxItems: 3,
-              items: {
-                type: "object",
-                properties: {
-                  label: { type: "string" },
-                  description: { type: "string" },
-                  tier: { type: "string", enum: ["S", "A", "B"] },
-                },
-                required: ["label", "description", "tier"],
-                additionalProperties: false,
-              },
-            },
-            codex: {
-              type: "array",
-              minItems: 5,
-              maxItems: 10,
-              items: { type: "string" },
-            },
-          },
-          required: ["refined_vertical", "stats", "top_hooks", "codex"],
-          additionalProperties: false,
-        },
-      },
-    },
-  ];
-
-  const userMsg = `Game: ${args.gameName}
+  const user = `Game: ${args.gameName}
 Reported vertical: ${args.vertical}
 Top ads (ranked):
 ${JSON.stringify(adSummary, null, 2)}`;
 
-  const res = await fetch(GATEWAY, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${key}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      messages: [
-        { role: "system", content: system },
-        { role: "user", content: userMsg },
-      ],
-      tools,
-      tool_choice: { type: "function", function: { name: "submit_character_sheet" } },
-    }),
-  });
-
-  if (!res.ok) {
-    const t = await res.text();
-    if (res.status === 429) throw new Error("Lovable AI rate limit exceeded — try again in a moment.");
-    if (res.status === 402) throw new Error("Lovable AI credits exhausted — top up in Settings → Workspace → Usage.");
-    throw new Error(`Lovable AI error ${res.status}: ${t.slice(0, 240)}`);
-  }
-
-  const data = await res.json();
-  const toolCall = data?.choices?.[0]?.message?.tool_calls?.[0];
-  if (!toolCall?.function?.arguments) {
-    throw new Error("AI did not return a structured character sheet");
-  }
-
-  const parsed = JSON.parse(toolCall.function.arguments) as {
+  type AIOut = {
     refined_vertical: string;
     stats: { key: string; label: string; value: number; lore: string }[];
     top_hooks: { label: string; description: string; tier: string }[];
     codex: string[];
   };
+
+  const parsed = await callAITool<AIOut>({
+    system,
+    user,
+    toolName: "submit_character_sheet",
+    parameters: {
+      type: "object",
+      properties: {
+        refined_vertical: { type: "string" },
+        stats: {
+          type: "array",
+          minItems: 5,
+          maxItems: 7,
+          items: {
+            type: "object",
+            properties: {
+              key: { type: "string", description: "snake_case slug" },
+              label: { type: "string" },
+              value: { type: "number", minimum: 0, maximum: 100 },
+              lore: { type: "string" },
+            },
+            required: ["key", "label", "value", "lore"],
+            additionalProperties: false,
+          },
+        },
+        top_hooks: {
+          type: "array",
+          minItems: 3,
+          maxItems: 3,
+          items: {
+            type: "object",
+            properties: {
+              label: { type: "string" },
+              description: { type: "string" },
+              tier: { type: "string", enum: ["S", "A", "B"] },
+            },
+            required: ["label", "description", "tier"],
+            additionalProperties: false,
+          },
+        },
+        codex: {
+          type: "array",
+          minItems: 5,
+          maxItems: 10,
+          items: { type: "string" },
+        },
+      },
+      required: ["refined_vertical", "stats", "top_hooks", "codex"],
+      additionalProperties: false,
+    },
+  });
 
   return {
     refinedVertical: parsed.refined_vertical,
@@ -166,7 +126,13 @@ ${JSON.stringify(adSummary, null, 2)}`;
 
 // Build an editable creative brief from a character sheet + target game.
 export async function draftBrief(args: {
-  character: { name: string; vertical: string; stats: CharacterStat[]; topHooks: { label: string; description: string }[]; codex: string[] };
+  character: {
+    name: string;
+    vertical: string;
+    stats: CharacterStat[];
+    topHooks: { label: string; description: string }[];
+    codex: string[];
+  };
   targetGameName: string;
 }): Promise<{
   title: string;
@@ -178,39 +144,9 @@ export async function draftBrief(args: {
   notes: string;
   prompt: string;
 }> {
-  const key = process.env.LOVABLE_API_KEY;
-  if (!key) throw new Error("LOVABLE_API_KEY is not configured");
-
   const system = `You are a creative director for mobile game UA ads. Given a competitor's "character sheet" of winning patterns, you draft a creative brief tailored for the user's game. Be specific and shippable.`;
 
-  const tools = [
-    {
-      type: "function",
-      function: {
-        name: "submit_brief",
-        parameters: {
-          type: "object",
-          properties: {
-            title: { type: "string" },
-            target_hook: { type: "string" },
-            mechanic: { type: "string" },
-            visual_cue: { type: "string" },
-            pacing: { type: "string" },
-            cta: { type: "string" },
-            notes: { type: "string" },
-            scenario_prompt: {
-              type: "string",
-              description: "Detailed text-to-image prompt for Scenario, describing a single still frame that captures the ad's core hook. Include style, lighting, composition, and subject.",
-            },
-          },
-          required: ["title", "target_hook", "mechanic", "visual_cue", "pacing", "cta", "notes", "scenario_prompt"],
-          additionalProperties: false,
-        },
-      },
-    },
-  ];
-
-  const userMsg = `Competitor character: ${args.character.name} (${args.character.vertical})
+  const user = `Competitor character: ${args.character.name} (${args.character.vertical})
 Top stats: ${args.character.stats.map((s) => `${s.label} ${s.value}`).join(", ")}
 Top hooks: ${args.character.topHooks.map((h) => `${h.label} — ${h.description}`).join(" | ")}
 Codex insights:
@@ -220,34 +156,51 @@ Target game (the user's): ${args.targetGameName}
 
 Draft a creative brief that adapts the competitor's winning patterns for the target game.`;
 
-  const res = await fetch(GATEWAY, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${key}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      messages: [
-        { role: "system", content: system },
-        { role: "user", content: userMsg },
+  type AIOut = {
+    title: string;
+    target_hook: string;
+    mechanic: string;
+    visual_cue: string;
+    pacing: string;
+    cta: string;
+    notes: string;
+    scenario_prompt: string;
+  };
+
+  const p = await callAITool<AIOut>({
+    system,
+    user,
+    toolName: "submit_brief",
+    parameters: {
+      type: "object",
+      properties: {
+        title: { type: "string" },
+        target_hook: { type: "string" },
+        mechanic: { type: "string" },
+        visual_cue: { type: "string" },
+        pacing: { type: "string" },
+        cta: { type: "string" },
+        notes: { type: "string" },
+        scenario_prompt: {
+          type: "string",
+          description:
+            "Detailed text-to-image prompt for Scenario, describing a single still frame that captures the ad's core hook. Include style, lighting, composition, and subject.",
+        },
+      },
+      required: [
+        "title",
+        "target_hook",
+        "mechanic",
+        "visual_cue",
+        "pacing",
+        "cta",
+        "notes",
+        "scenario_prompt",
       ],
-      tools,
-      tool_choice: { type: "function", function: { name: "submit_brief" } },
-    }),
+      additionalProperties: false,
+    },
   });
 
-  if (!res.ok) {
-    const t = await res.text();
-    if (res.status === 429) throw new Error("Lovable AI rate limit exceeded — try again in a moment.");
-    if (res.status === 402) throw new Error("Lovable AI credits exhausted.");
-    throw new Error(`Lovable AI error ${res.status}: ${t.slice(0, 240)}`);
-  }
-
-  const data = await res.json();
-  const toolCall = data?.choices?.[0]?.message?.tool_calls?.[0];
-  if (!toolCall?.function?.arguments) throw new Error("AI did not return a brief");
-  const p = JSON.parse(toolCall.function.arguments);
   return {
     title: p.title,
     targetHook: p.target_hook,

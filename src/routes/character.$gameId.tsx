@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
   Loader2, RefreshCw, Share2, Skull, Sword, Coins, TrendingUp, Sparkles,
-  Hammer, Image as ImageIcon, ScrollText, Trash2,
+  Hammer, Image as ImageIcon, ScrollText, Trash2, Lightbulb,
 } from "lucide-react";
 import { useCharacter } from "@/hooks/use-characters";
 import { saveCharacter, deleteCharacter } from "@/lib/store";
@@ -15,6 +15,7 @@ import {
   TopAdsPanel, GalleryPanel, AnvilPanel, AIThinkingTrace,
 } from "@/components/dashboard/Panels";
 import { BriefBuilderPanel } from "@/components/dashboard/BriefBuilder";
+import { InspiredByTopAdsPanel } from "@/components/dashboard/InspiredByTopAds";
 import type { GeneratedCreative, GalleryItem, ThoughtEvent, CreativeBrief } from "@/lib/types";
 import { toast } from "sonner";
 
@@ -350,10 +351,24 @@ function CharacterPage() {
             />
           </ExpandPanel>
 
-          {/* Brief Builder */}
+          {/* Inspired by Top Ads — primary brief path */}
           <ExpandPanel
-            title="Brief Builder"
-            subtitle="Adapt winning patterns into a creative brief"
+            title="Inspired by Top Ads"
+            subtitle="Briefs derived from comparable games' top creatives"
+            icon={<Lightbulb className="h-4 w-4" />}
+            defaultOpen={true}
+            emphasis
+          >
+            <InspiredByTopAdsPanel
+              character={character}
+              onForge={(b) => setActiveBriefId(b.id)}
+            />
+          </ExpandPanel>
+
+          {/* Brief Builder — manual / advanced */}
+          <ExpandPanel
+            title="Brief Builder (Manual)"
+            subtitle="Hand-craft a brief from this game's character sheet"
             icon={<Sparkles className="h-4 w-4" />}
             defaultOpen={false}
           >
