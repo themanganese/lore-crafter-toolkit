@@ -9,7 +9,15 @@ import { generateImage, editImage } from "@/lib/scenario/client.server";
 import { runFullAnalysisOrchestrated } from "@/lib/silki/orchestrator.server";
 import { startRun, getEvents } from "@/lib/silki/runs.server";
 import { callAIChat } from "@/lib/silki/ai.server";
+import {
+  suggestComparables,
+  generateInspiredBriefs,
+  type ComparableGame,
+  type InspiredBrief,
+} from "@/lib/silki/inspired.server";
 import type { AdCreative, CharacterStat, Tier } from "@/lib/types";
+
+export type { ComparableGame, InspiredBrief };
 
 export const searchGames = createServerFn({ method: "POST" })
   .inputValidator(z.object({ query: z.string().min(1).max(120) }))
