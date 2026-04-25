@@ -54,6 +54,26 @@ function isoDaysAgo(days: number) {
   return d.toISOString().slice(0, 10);
 }
 
+function looksLikeUnifiedAppId(value: string) {
+  return /^[a-f0-9]{24}$/i.test(value);
+}
+
+async function resolveUnifiedAppId(externalId: string, platform: "ios" | "android") {
+  if (looksLikeUnifiedAppId(externalId)) return externalId;
+
+  const appIdType = platform === "ios" ? "itunes" : "android";
+  const meta = await stFetch(`/v1/unified/apps`, {
+    app_ids: externalId,
+    app_id_type: appIdType,
+  });
+
+  const apps = (meta?.apps ?? (Array.isArray(meta) ? meta : [])) as unknown[];
+  const first = apps?.[0] as Record<string, unknown> | undefined;
+  const unifiedId = first?.unified_app_id;
+
+  return typeof unifiedId === "string" && unifiedId.length > 0 ? unifiedId : externalId;
+}
+
 function pickPlatform(app: Record<string, unknown>): "ios" | "android" {
   const os = (app.os ?? app.platform ?? app.primary_platform) as string | undefined;
   if (typeof os === "string" && os.toLowerCase().includes("android")) return "android";
@@ -109,11 +129,13 @@ export const sensorTowerProvider: AdIntelProvider = {
   },
 
   async fetchTopAds({ externalId, limit = 24 }) {
+    const resolvedExternalId = await resolveUnifiedAppId(externalId, arguments[0].platform);
+
     // SensorTower's `limit` param only accepts {10, 50, 100}.
     const apiLimit = limit <= 10 ? 10 : limit <= 50 ? 50 : 100;
 
     const baseParams = {
-      app_ids: externalId,
+      app_ids: resolvedExternalId,
       start_date: isoDaysAgo(90),
       end_date: isoDaysAgo(0),
       countries: DEFAULT_COUNTRIES,
@@ -152,7 +174,7 @@ export const sensorTowerProvider: AdIntelProvider = {
     let vertical = "";
     try {
       const meta = await stFetch(`/v1/unified/apps`, {
-        app_ids: externalId,
+        app_ids: resolvedExternalId,
         app_id_type: "unified",
       });
       const apps = (meta?.apps ?? (Array.isArray(meta) ? meta : [])) as unknown[];
