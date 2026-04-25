@@ -14,8 +14,8 @@ interface ForgeDB extends DBSchema {
   };
 }
 
-const DB_NAME = "creatorforge";
-const DB_VERSION = 1;
+const DB_NAME = "forge_silki";
+const DB_VERSION = 2;
 
 let dbPromise: Promise<IDBPDatabase<ForgeDB>> | null = null;
 
@@ -25,32 +25,45 @@ function getDB() {
   }
   if (!dbPromise) {
     dbPromise = openDB<ForgeDB>(DB_NAME, DB_VERSION, {
-      upgrade(db) {
-        const chars = db.createObjectStore("characters", { keyPath: "id" });
-        chars.createIndex("by-updated", "updatedAt");
-        db.createObjectStore("settings");
+      upgrade(db, oldVersion) {
+        if (oldVersion < 1) {
+          const chars = db.createObjectStore("characters", { keyPath: "id" });
+          chars.createIndex("by-updated", "updatedAt");
+          db.createObjectStore("settings");
+        }
+        // v2 adds new fields with defaults — handled at read-time via ensureDefaults
       },
     });
   }
   return dbPromise;
 }
 
+// Backfill new fields on characters loaded from older versions
+function ensureDefaults(c: GameCharacter): GameCharacter {
+  return {
+    ...c,
+    aiThoughts: c.aiThoughts ?? [],
+    gallery: c.gallery ?? [],
+    chatMessages: c.chatMessages ?? [],
+  };
+}
+
 export async function listCharacters(): Promise<GameCharacter[]> {
   const db = await getDB();
   const all = await db.getAllFromIndex("characters", "by-updated");
-  return all.reverse();
+  return all.reverse().map(ensureDefaults);
 }
 
 export async function getCharacter(id: string): Promise<GameCharacter | undefined> {
   const db = await getDB();
-  return db.get("characters", id);
+  const c = await db.get("characters", id);
+  return c ? ensureDefaults(c) : undefined;
 }
 
 export async function saveCharacter(c: GameCharacter): Promise<void> {
   const db = await getDB();
-  c.updatedAt = new Date().toISOString();
-  await db.put("characters", c);
-  // Notify listeners
+  const safe = ensureDefaults({ ...c, updatedAt: new Date().toISOString() });
+  await db.put("characters", safe);
   window.dispatchEvent(new CustomEvent("forge:characters-changed"));
 }
 
