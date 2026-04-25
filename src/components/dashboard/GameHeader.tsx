@@ -168,11 +168,10 @@ interface SlotData {
   label: string;
   value: string | number;
   icon: ReactNode;
-  tier?: import("@/lib/types").Tier;
+  tier?: Tier;
   suffix?: string;
 }
 
-import type { ReactNode } from "react";
 
 function EquipmentSlot({
   label,
