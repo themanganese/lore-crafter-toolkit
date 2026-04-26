@@ -59,7 +59,7 @@
   --color-chart-4: var(--gold-dim);
   --color-chart-5: var(--iron);
 
-  --font-display: "Cinzel", "Trajan Pro", "Times New Roman", serif;
+  --font-display: "Alte Haas Grotesk", "Arial Narrow", sans-serif;
   --font-body: "Open Sans", "Helvetica Neue", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
 
@@ -154,12 +154,12 @@
     background-attachment: fixed;
   }
 
-  /* ── Brand font: Cinzel SemiBold 600 ── */
+  /* ── Brand font: Alte Haas Grotesk Bold 700 ── */
   h1, h2, h3, h4, h5, h6,
   .font-display {
     font-family: var(--font-display);
-    font-weight: 600;
-    letter-spacing: 0.03em;
+    font-weight: 700;
+    letter-spacing: 0.01em;
   }
 
   /* ── Text font: Open Sans (default for everything else) ── */
