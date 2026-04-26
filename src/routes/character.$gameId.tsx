@@ -150,12 +150,11 @@ function CharacterPage() {
         gallery: [galleryItem, ...character.gallery],
       });
       refresh();
-      const variantUrl = `/character/${character.id}/variant/${gen.id}`;
       toast.success("Variant forged — click Open to view", {
         duration: 20000,
         action: {
           label: "Open",
-          onClick: () => window.open(variantUrl, "_blank", "noreferrer"),
+          onClick: () => window.open(r.imageUrl, "_blank", "noreferrer"),
         },
       });
     } catch (e) {
