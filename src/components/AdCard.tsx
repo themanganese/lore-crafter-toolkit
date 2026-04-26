@@ -3,8 +3,10 @@ import { TierBadge } from "./TierBadge";
 import { ImageOff } from "lucide-react";
 
 export function AdCard({ ad }: { ad: AdCreative }) {
-  return (
-    <div className="panel-grim rounded-sm overflow-hidden group">
+  const href = ad.videoUrl ?? ad.thumbnailUrl;
+
+  const inner = (
+    <>
       <div className="aspect-square bg-muted/40 relative flex items-center justify-center overflow-hidden">
         {ad.thumbnailUrl ? (
           <img
@@ -36,6 +38,26 @@ export function AdCard({ ad }: { ad: AdCreative }) {
           </p>
         ) : null}
       </div>
+    </>
+  );
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        className="panel-grim rounded-sm overflow-hidden group block hover:border-gold/60 transition-colors"
+        title={ad.videoUrl ? "Open ad video" : "Open ad image"}
+      >
+        {inner}
+      </a>
+    );
+  }
+
+  return (
+    <div className="panel-grim rounded-sm overflow-hidden group">
+      {inner}
     </div>
   );
 }
