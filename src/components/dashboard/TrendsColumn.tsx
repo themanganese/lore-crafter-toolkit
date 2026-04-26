@@ -1,33 +1,15 @@
-import type { ScoreBreakdown, TrendAnalysis, PatternTag } from "@/lib/types";
+import type { ScoreBreakdown, TrendAnalysis, RevenueForecast } from "@/lib/types";
 import { StatRadar } from "@/components/StatRadar";
 import { TrendVelocityChart } from "@/components/charts/TrendVelocityChart";
-import { cn } from "@/lib/utils";
+import { RevenueForecastChart } from "@/components/charts/RevenueForecastChart";
 
 interface Props {
   breakdown?: ScoreBreakdown;
   trend?: TrendAnalysis;
+  forecast?: RevenueForecast;
 }
 
-const TAG_STYLES: Record<PatternTag, string> = {
-  lead: "bg-gold-bright/20 text-gold-bright border-gold-bright/60",
-  safe: "bg-gold/10 text-gold border-gold/40",
-  watch: "bg-copper/15 text-copper border-copper/50",
-  caution: "bg-bronze/15 text-bronze border-bronze/50",
-  filler: "bg-iron/25 text-foreground/60 border-iron/40",
-  avoid: "bg-destructive/12 text-destructive border-destructive/40",
-};
-
-export function TrendsColumn({ breakdown, trend }: Props) {
-  const allPatterns = trend ? [...trend.whatIsWorking, ...trend.whatIsSaturating] : [];
-
-  // Sort by appearances * signal weight for the table.
-  const tableRows = [...allPatterns]
-    .sort((a, b) => {
-      const w = (p: typeof a) => p.windowAppearances * (p.signalStrength === "high" ? 2 : 1);
-      return w(b) - w(a);
-    })
-    .slice(0, 5);
-
+export function TrendsColumn({ breakdown, trend, forecast }: Props) {
   return (
     <section className="panel-grim p-6 flex flex-col gap-5 min-h-0 overflow-y-auto">
       <div className="font-display text-[11px] uppercase tracking-[0.4em] text-gold-dim">
@@ -53,69 +35,14 @@ export function TrendsColumn({ breakdown, trend }: Props) {
 
       <div>
         <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-gold-dim mb-1.5">
-          Velocity × Signal
+          Revenue · Day 0→90
         </div>
-        {tableRows.length > 0 ? (
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="text-left border-b border-gold/30">
-                <th className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground py-1.5 pr-2">
-                  Pattern
-                </th>
-                <th className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground py-1.5 pr-2 w-16">
-                  Tag
-                </th>
-                <th className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground py-1.5 text-right w-12">
-                  Δ
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableRows.map((p, i) => {
-                const delta =
-                  p.trendVelocity === "rising"
-                    ? `+${p.windowAppearances}`
-                    : p.trendVelocity === "declining"
-                      ? `−${p.windowAppearances}`
-                      : `${p.windowAppearances}`;
-                const deltaColor =
-                  p.trendVelocity === "rising"
-                    ? "text-gold-bright"
-                    : p.trendVelocity === "declining"
-                      ? "text-destructive/85"
-                      : "text-foreground/70";
-                return (
-                  <tr key={i} className="border-b border-gold/10 last:border-0">
-                    <td className="py-1.5 pr-2 font-body text-[12px] text-foreground/85 truncate max-w-[160px]">
-                      {p.pattern}
-                    </td>
-                    <td className="py-1.5 pr-2">
-                      <span
-                        className={cn(
-                          "font-mono text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded-sm border",
-                          TAG_STYLES[p.tag] ?? TAG_STYLES.filler,
-                        )}
-                      >
-                        {p.tag}
-                      </span>
-                    </td>
-                    <td
-                      className={cn(
-                        "py-1.5 font-mono text-[12px] tabular-nums text-right",
-                        deltaColor,
-                      )}
-                    >
-                      {delta}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        {forecast ? (
+          <RevenueForecastChart forecast={forecast} height={140} />
         ) : (
-          <p className="font-mono text-[11px] text-muted-foreground italic">
-            No patterns detected.
-          </p>
+          <div className="h-[140px] flex items-center justify-center font-mono text-[11px] text-muted-foreground italic border border-dashed border-gold/25 rounded-sm">
+            Forecast pending.
+          </div>
         )}
       </div>
     </section>

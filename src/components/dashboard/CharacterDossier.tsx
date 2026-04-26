@@ -66,8 +66,16 @@ export function CharacterDossier({
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-h-[480px]">
-        <TargetColumn breakdown={character.scoreBreakdown} topHooks={character.topHooks} />
-        <TrendsColumn breakdown={character.scoreBreakdown} trend={character.trendAnalysis} />
+        <TargetColumn
+          breakdown={character.scoreBreakdown}
+          topHooks={character.topHooks}
+          trend={character.trendAnalysis}
+        />
+        <TrendsColumn
+          breakdown={character.scoreBreakdown}
+          trend={character.trendAnalysis}
+          forecast={character.revenueForecast}
+        />
         <GalleryColumn
           character={character}
           gameId={character.id}

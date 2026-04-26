@@ -60,19 +60,20 @@ function WinProbabilityRing({ score, confidence }: { score: number; confidence: 
 }
 
 function StatLine({ label, value }: { label: string; value: number }) {
-  const isStrong = value >= 60;
+  // Defensive: guard against missing/non-numeric values so the row never
+  // collapses to an invisible span. Round to whole numbers for display.
+  const n = Number.isFinite(value) ? Math.round(value) : 0;
+  const isStrong = n >= 60;
   return (
-    <div className="flex items-baseline justify-between py-2 border-b border-gold/15 last:border-0">
+    <div className="flex items-baseline justify-between py-1.5 border-b border-gold/15 last:border-0">
       <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/75">
         {label}
       </span>
       <span
-        className={cn(
-          "font-display text-base tabular-nums",
-          isStrong ? "text-gold-bright" : "text-foreground/85",
-        )}
+        className="font-display text-base tabular-nums"
+        style={{ color: isStrong ? "#b08a4a" : "var(--color-bronze)" }}
       >
-        {value.toString().padStart(2, "0")}
+        {n}
       </span>
     </div>
   );
@@ -92,9 +93,17 @@ function HookRow({ hook }: { hook: { label: string; description: string; tier: T
   );
 }
 
-export function TargetColumn({ breakdown, topHooks }: Props) {
+export function TargetColumn({ breakdown, topHooks, trend }: Props) {
+  const allPatterns = trend ? [...trend.whatIsWorking, ...trend.whatIsSaturating] : [];
+  const tableRows = [...allPatterns]
+    .sort((a, b) => {
+      const w = (p: typeof a) => p.windowAppearances * (p.signalStrength === "high" ? 2 : 1);
+      return w(b) - w(a);
+    })
+    .slice(0, 5);
+
   return (
-    <section className="panel-grim p-6 flex flex-col gap-5 min-h-0 overflow-y-auto">
+    <section className="panel-grim p-6 flex flex-col gap-3 min-h-0 overflow-y-auto">
       <div className="font-display text-[11px] uppercase tracking-[0.4em] text-gold-dim">
         Target
       </div>
@@ -118,7 +127,7 @@ export function TargetColumn({ breakdown, topHooks }: Props) {
       </div>
 
       <div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-gold-dim mb-1.5">
+        <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-gold-dim mb-1">
           Equipped Hooks ({topHooks.length})
         </div>
         {topHooks.length > 0 ? (
@@ -129,6 +138,75 @@ export function TargetColumn({ breakdown, topHooks }: Props) {
           </div>
         ) : (
           <p className="font-mono text-[11px] text-muted-foreground italic">None equipped.</p>
+        )}
+      </div>
+
+      {/* Velocity × Signal — moved here from TrendsColumn to free chart space */}
+      <div className="border-t border-gold/30 pt-3">
+        <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-gold-dim mb-1.5">
+          Velocity × Signal
+        </div>
+        {tableRows.length > 0 ? (
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="text-left border-b border-gold/30">
+                <th className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground py-1.5 pr-2">
+                  Pattern
+                </th>
+                <th className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground py-1.5 pr-2 w-16">
+                  Tag
+                </th>
+                <th className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground py-1.5 text-right w-12">
+                  Δ
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableRows.map((p, i) => {
+                const delta =
+                  p.trendVelocity === "rising"
+                    ? `+${p.windowAppearances}`
+                    : p.trendVelocity === "declining"
+                      ? `−${p.windowAppearances}`
+                      : `${p.windowAppearances}`;
+                const deltaColor =
+                  p.trendVelocity === "rising"
+                    ? "text-gold-bright"
+                    : p.trendVelocity === "declining"
+                      ? "text-destructive/85"
+                      : "text-foreground/70";
+                return (
+                  <tr key={i} className="border-b border-gold/10 last:border-0">
+                    <td className="py-1.5 pr-2 font-body text-[12px] text-foreground/85 truncate max-w-[160px]">
+                      {p.pattern}
+                    </td>
+                    <td className="py-1.5 pr-2">
+                      <span
+                        className={cn(
+                          "font-mono text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded-sm border",
+                          TAG_STYLES[p.tag] ?? TAG_STYLES.filler,
+                        )}
+                      >
+                        {p.tag}
+                      </span>
+                    </td>
+                    <td
+                      className={cn(
+                        "py-1.5 font-mono text-[12px] tabular-nums text-right",
+                        deltaColor,
+                      )}
+                    >
+                      {delta}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : (
+          <p className="font-mono text-[11px] text-muted-foreground italic">
+            No patterns detected.
+          </p>
         )}
       </div>
     </section>

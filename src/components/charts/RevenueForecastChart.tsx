@@ -23,7 +23,13 @@ function bandWidth(c: "high" | "medium" | "low"): number {
   return 0.22;
 }
 
-export function RevenueForecastChart({ forecast }: { forecast: RevenueForecast }) {
+export function RevenueForecastChart({
+  forecast,
+  height = 160,
+}: {
+  forecast: RevenueForecast;
+  height?: number;
+}) {
   const baseline = forecast.baselineMonthlyUsd;
   // Day 0 is anchored at the modelled day_30 / 30 ≈ daily run-rate proxy of baseline.
   // Recharts plots a piecewise linear; we provide 4 control points.
@@ -66,14 +72,9 @@ export function RevenueForecastChart({ forecast }: { forecast: RevenueForecast }
 
   return (
     <div className="w-full">
-      <ResponsiveContainer width="100%" height={160}>
+      <ResponsiveContainer width="100%" height={height}>
         <ComposedChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: -8 }}>
-          <defs>
-            <linearGradient id="revBand" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="var(--color-gold)" stopOpacity={0.18} />
-              <stop offset="100%" stopColor="var(--color-gold)" stopOpacity={0.04} />
-            </linearGradient>
-          </defs>
+          {/* Solid 10%-opacity gold band per spec — no gradient. */}
           <CartesianGrid
             stroke="var(--color-gold)"
             strokeOpacity={0.2}
@@ -136,7 +137,8 @@ export function RevenueForecastChart({ forecast }: { forecast: RevenueForecast }
             type="monotone"
             dataKey="hi"
             stroke="none"
-            fill="url(#revBand)"
+            fill="#b08a4a"
+            fillOpacity={0.1}
             isAnimationActive
             animationDuration={800}
             activeDot={false}
@@ -165,12 +167,12 @@ export function RevenueForecastChart({ forecast }: { forecast: RevenueForecast }
             type="monotone"
             dataKey="modelled"
             name="Modelled"
-            stroke="var(--color-gold)"
+            stroke="#b08a4a"
             strokeWidth={2}
             dot={{
               r: 3,
               fill: "var(--color-gold-bright)",
-              stroke: "var(--color-gold)",
+              stroke: "#b08a4a",
               strokeWidth: 1,
             }}
             activeDot={{ r: 4, fill: "var(--color-gold-bright)" }}

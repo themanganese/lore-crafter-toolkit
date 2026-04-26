@@ -50,6 +50,10 @@ export function GalleryColumn({
   const [showAll, setShowAll] = useState(false);
   const [inspiredOpen, setInspiredOpen] = useState(true);
   const [manualOpen, setManualOpen] = useState(false);
+  const [selectedBriefId, setSelectedBriefId] = useState<string | undefined>(briefs[0]?.id);
+
+  // Keep the selected brief in sync when briefs are added/removed.
+  const selectedBrief = briefs.find((b) => b.id === selectedBriefId) ?? briefs[0];
 
   const ranked = useMemo(
     () => rankAds({ ads, trend, targetGameName: character.name }),
@@ -219,32 +223,136 @@ export function GalleryColumn({
         </p>
       )}
 
-      {/* Inline forge buttons for stored briefs (compact). */}
+      {/* The Anvil — saved briefs list + selected-brief detail card. */}
       {briefs.length > 0 && (
-        <div className="border-t border-gold/15 pt-2 -mt-1">
-          <div className="font-mono text-[9px] uppercase tracking-widest text-gold-dim mb-1">
-            Saved briefs ({briefs.length}) — forge into variant
+        <div className="border-t border-gold/30 pt-3 -mt-1 space-y-2">
+          <div className="font-display text-[11px] uppercase tracking-[0.4em] text-gold-dim">
+            The Anvil ·{" "}
+            <span className="text-foreground/85 normal-case tracking-normal font-display italic">
+              {briefs.length} brief{briefs.length === 1 ? "" : "s"} ready to forge
+            </span>
           </div>
-          <div className="flex flex-wrap gap-1.5">
-            {briefs.slice(0, 5).map((b) => (
-              <button
-                key={b.id}
-                onClick={() => onGenerateFromBrief(b)}
-                disabled={generating}
-                className="px-2 py-1 border border-gold/30 rounded-sm bg-muted/15 hover:bg-gold/10 hover:border-gold/60 disabled:opacity-50 flex items-center gap-1.5 max-w-[180px]"
-              >
-                {generating ? (
-                  <Loader2 className="h-3 w-3 animate-spin text-gold-bright shrink-0" />
-                ) : (
-                  <Hammer className="h-3 w-3 text-gold-bright shrink-0" />
-                )}
-                <span className="font-display text-[12px] text-foreground truncate">{b.title}</span>
-              </button>
-            ))}
+
+          <div className="flex flex-col gap-1">
+            {briefs.slice(0, 5).map((b) => {
+              const active = selectedBrief?.id === b.id;
+              return (
+                <button
+                  key={b.id}
+                  onClick={() => setSelectedBriefId(b.id)}
+                  className={cn(
+                    "w-full text-left px-2 py-1.5 border rounded-sm flex items-center gap-2 transition-colors",
+                    active
+                      ? "border-gold/60 bg-gold/10"
+                      : "border-gold/25 bg-muted/15 hover:border-gold/45 hover:bg-gold/5",
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "font-mono text-[9px] uppercase tracking-widest shrink-0",
+                      active ? "text-gold-bright" : "text-gold-dim",
+                    )}
+                  >
+                    {active ? "▸" : " "}
+                  </span>
+                  <span className="font-display text-[13px] text-foreground truncate flex-1">
+                    {b.title}
+                  </span>
+                  <span className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground shrink-0">
+                    {b.cta || "—"}
+                  </span>
+                </button>
+              );
+            })}
           </div>
+
+          {selectedBrief && (
+            <BriefDetailCard
+              brief={selectedBrief}
+              generating={generating}
+              onGenerate={() => onGenerateFromBrief(selectedBrief)}
+            />
+          )}
         </div>
       )}
     </section>
+  );
+}
+
+// ───────── Selected brief detail card ─────────
+function BriefDetailCard({
+  brief,
+  generating,
+  onGenerate,
+}: {
+  brief: CreativeBrief;
+  generating: boolean;
+  onGenerate: () => void;
+}) {
+  return (
+    <div className="border border-gold/40 rounded-sm bg-card p-3 space-y-2.5">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="font-mono text-[9px] uppercase tracking-widest text-gold-dim">Brief</div>
+          <h4 className="font-display text-base text-foreground leading-tight mt-0.5">
+            {brief.title}
+          </h4>
+          <div className="font-mono text-[10px] text-muted-foreground italic mt-0.5">
+            For {brief.targetGameName}
+          </div>
+        </div>
+        <button
+          onClick={onGenerate}
+          disabled={generating}
+          className="btn-copper px-3 py-1.5 font-display tracking-wider text-[12px] rounded-sm flex items-center gap-1.5 shrink-0 disabled:opacity-50"
+        >
+          {generating ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <Hammer className="h-3.5 w-3.5" />
+          )}
+          {generating ? "Forging…" : "Generate variant"}
+        </button>
+      </div>
+
+      <BriefField label="Hook" value={brief.targetHook} />
+      <BriefField label="Narrative arc" value={brief.mechanic || brief.notes || "—"} />
+      <BriefField label="Visual direction" value={brief.visualCue} />
+      <BriefField label="Pacing" value={brief.pacing} />
+
+      <div>
+        <div className="font-mono text-[9px] uppercase tracking-widest text-gold-dim mb-1">
+          Format target
+        </div>
+        <div className="flex gap-1.5">
+          <span className="font-mono text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded-sm border border-gold/40 text-gold">
+            Static · 1080×1080
+          </span>
+          <span className="font-mono text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded-sm border border-gold/40 text-gold">
+            Story · 1080×1920
+          </span>
+        </div>
+      </div>
+
+      <div>
+        <div className="font-mono text-[9px] uppercase tracking-widest text-gold-dim mb-1">
+          Scenario prompt
+        </div>
+        <pre className="font-mono text-[11px] text-foreground/85 leading-snug whitespace-pre-wrap bg-muted/30 border border-border rounded-sm p-2 max-h-32 overflow-y-auto">
+          {brief.prompt}
+        </pre>
+      </div>
+    </div>
+  );
+}
+
+function BriefField({ label, value }: { label: string; value: string }) {
+  if (!value) return null;
+  return (
+    <div>
+      <div className="font-mono text-[9px] uppercase tracking-widest text-gold-dim">{label}</div>
+      <p className="font-body text-[12px] text-foreground/85 leading-snug mt-0.5">{value}</p>
+    </div>
   );
 }
 
