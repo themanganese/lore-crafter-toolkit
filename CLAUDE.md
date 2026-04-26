@@ -22,8 +22,7 @@ The brand metaphor is a forge / armory / character codex. UI strings use ceremon
 - Frontend calls them via `useServerFn` hooks.
 - The agent pipeline is in `src/lib/silki/` (orchestrator, ai client, inspired briefs).
 - Sensor Tower client: `src/lib/adintel/sensortower.server.ts`.
-- Scenario client: `src/lib/scenario/client.server.ts`. Has a `MOCK_SCENARIO=1` env flag that bypasses the live API and returns Picsum placeholders. **For the demo, MOCK_SCENARIO=1 must stay on** — Scenario's API is currently 403-ing on our hackathon plan.
-
+- Scenario client: `src/lib/scenario/client.server.ts`. Has a `MOCK_SCENARIO=1` env flag that bypasses the live API and returns Picsum placeholders. 
 ## Code conventions
 - Routes are file-based in `src/routes/`. A file at `src/routes/character/$gameId.tsx` becomes `/character/:gameId`.
 - Components in `src/components/`. shadcn primitives in `src/components/ui/`. Forge-specific components live close to where they're used (e.g. inside the route file's directory or in `src/components/forge/`).

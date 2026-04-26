@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Download, Pencil, Skull } from "lucide-react";
+import { ArrowLeft, Download, Loader2, Pencil, Skull } from "lucide-react";
 import { useCharacter } from "@/hooks/use-characters";
 
 export const Route = createFileRoute("/character/$gameId/variant/$variantId")({
@@ -9,7 +9,18 @@ export const Route = createFileRoute("/character/$gameId/variant/$variantId")({
 
 function VariantPage() {
   const { gameId, variantId } = Route.useParams();
-  const { character } = useCharacter(gameId);
+  const { character, loading } = useCharacter(gameId);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen text-center px-6">
+        <Loader2 className="h-6 w-6 text-gold-dim animate-spin mb-3" />
+        <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+          Retrieving variant from the codex…
+        </p>
+      </div>
+    );
+  }
 
   if (!character) {
     return (

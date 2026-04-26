@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2, RefreshCw, Download, Skull, ArrowLeft, Sparkles } from "lucide-react";
 import { useCharacter } from "@/hooks/use-characters";
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/character/$gameId/edit/$generationId")({
 
 function EditPage() {
   const { gameId, generationId } = Route.useParams();
-  const { character, refresh } = useCharacter(gameId);
+  const { character, loading, refresh } = useCharacter(gameId);
   const editFn = useServerFn(editGeneration);
   const regen = useServerFn(generateCreative);
   const [working, setWorking] = useState(false);
@@ -23,6 +23,23 @@ function EditPage() {
   const gen = character?.generations.find((g) => g.id === generationId);
   const [prompt, setPrompt] = useState(gen?.prompt ?? "");
   const [strength, setStrength] = useState(0.55);
+
+  // useState initializer captures gen.prompt on first render, but `character` is
+  // null during the initial IndexedDB read. Sync once when gen first appears.
+  useEffect(() => {
+    if (gen && !prompt) setPrompt(gen.prompt);
+  }, [gen, prompt]);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen text-center px-6">
+        <Loader2 className="h-6 w-6 text-gold-dim animate-spin mb-3" />
+        <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+          Retrieving variant from the codex…
+        </p>
+      </div>
+    );
+  }
 
   if (!character) {
     return (
