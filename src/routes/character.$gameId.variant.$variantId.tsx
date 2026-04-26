@@ -29,7 +29,7 @@ function VariantPage() {
   if (!gen && !galleryItem) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen text-center px-6">
-        <p className="font-mono text-sm text-muted-foreground mb-4">
+        <p className="text-base text-muted-foreground mb-4">
           Variant not found in this character's gallery.
         </p>
         <Link
@@ -61,11 +61,11 @@ function VariantPage() {
         <Link
           to="/character/$gameId"
           params={{ gameId }}
-          className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground hover:text-gold-bright flex items-center gap-1.5"
+          className="text-base uppercase tracking-widest text-muted-foreground hover:text-gold-bright flex items-center gap-1.5"
         >
           <ArrowLeft className="h-3 w-3" /> Back to {character.name}
         </Link>
-        <div className="font-display text-xs uppercase tracking-[0.4em] text-gold-dim">
+        <div className="font-display text-2xl uppercase tracking-[0.4em] text-gold-dim">
           Variant · {version}
         </div>
       </div>
@@ -78,7 +78,7 @@ function VariantPage() {
             className="w-full h-auto rounded-sm"
           />
           <div className="flex items-center justify-between mt-3 px-1">
-            <span className="font-mono text-[10px] text-muted-foreground">
+            <span className="text-base text-muted-foreground">
               {createdAt && new Date(createdAt).toLocaleString()} · {model}
             </span>
             <div className="flex items-center gap-3">
@@ -86,7 +86,7 @@ function VariantPage() {
                 <Link
                   to="/character/$gameId/edit/$generationId"
                   params={{ gameId, generationId: gen.id }}
-                  className="font-mono text-[10px] uppercase tracking-widest text-gold-bright hover:underline flex items-center gap-1"
+                  className="text-base uppercase tracking-widest text-gold-bright hover:underline flex items-center gap-1"
                 >
                   <Pencil className="h-3 w-3" /> Edit in Anvil
                 </Link>
@@ -96,7 +96,7 @@ function VariantPage() {
                 target="_blank"
                 rel="noreferrer"
                 download
-                className="font-mono text-[10px] uppercase tracking-widest text-gold-bright hover:underline flex items-center gap-1"
+                className="text-base uppercase tracking-widest text-gold-bright hover:underline flex items-center gap-1"
               >
                 <Download className="h-3 w-3" /> Download
               </a>
@@ -106,42 +106,42 @@ function VariantPage() {
 
         <aside className="space-y-4">
           <div className="panel-grim p-4">
-            <div className="font-mono text-[10px] uppercase tracking-widest text-gold-dim mb-1.5">
+            <div className="text-base uppercase tracking-widest text-gold-dim mb-1.5">
               Brief
             </div>
             {brief ? (
               <>
-                <div className="font-display text-base text-foreground">{brief.title}</div>
-                <div className="font-mono text-[10px] text-muted-foreground mt-0.5">
+                <div className="font-display text-2xl text-foreground">{brief.title}</div>
+                <div className="text-base text-muted-foreground mt-0.5">
                   For {brief.targetGameName}
                 </div>
                 {brief.targetHook && (
-                  <p className="font-body text-xs text-foreground/80 mt-2 leading-relaxed">
+                  <p className="text-base text-foreground/80 mt-2 leading-relaxed">
                     {brief.targetHook}
                   </p>
                 )}
               </>
             ) : (
-              <p className="font-body text-xs text-muted-foreground italic">
+              <p className="text-base text-muted-foreground italic">
                 Untethered variant — no brief associated.
               </p>
             )}
           </div>
 
           <div className="panel-grim p-4">
-            <div className="font-mono text-[10px] uppercase tracking-widest text-gold-dim mb-1.5">
+            <div className="text-base uppercase tracking-widest text-gold-dim mb-1.5">
               Scenario prompt
             </div>
-            <p className="font-mono text-[11px] text-foreground/80 leading-relaxed whitespace-pre-wrap">
+            <p className="text-base text-foreground/80 leading-relaxed whitespace-pre-wrap">
               {prompt}
             </p>
           </div>
 
           <div className="panel-grim p-4">
-            <div className="font-mono text-[10px] uppercase tracking-widest text-gold-dim mb-1.5">
+            <div className="text-base uppercase tracking-widest text-gold-dim mb-1.5">
               Metadata
             </div>
-            <dl className="grid grid-cols-[80px_1fr] gap-y-1 text-xs font-mono">
+            <dl className="grid grid-cols-[80px_1fr] gap-y-1 text-base">
               <dt className="text-muted-foreground">ID</dt>
               <dd className="text-foreground/85 truncate">{variantId}</dd>
               <dt className="text-muted-foreground">Model</dt>

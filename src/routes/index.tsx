@@ -79,7 +79,7 @@ function ForgePage() {
       <header className="text-center mb-12">
         <Flame className="h-10 w-10 text-gold mx-auto mb-4 ember-flicker" />
         <h1 className="font-display text-5xl text-gradient-gold mb-3">The Forge</h1>
-        <p className="font-mono text-sm text-muted-foreground max-w-xl mx-auto leading-relaxed">
+        <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
           Name a competitor. We summon its top ads, divine its winning patterns,
           and inscribe a character sheet you can wield.
         </p>
@@ -93,12 +93,12 @@ function ForgePage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search a mobile game (e.g. Royal Match, Raid: Shadow Legends)…"
-            className="flex-1 bg-transparent outline-none px-2 py-2 text-foreground font-body placeholder:text-muted-foreground/60"
+            className="flex-1 bg-transparent outline-none px-2 py-2 text-base text-foreground placeholder:text-muted-foreground/60"
           />
           <button
             type="submit"
             disabled={searching || !query.trim()}
-            className="gold-frame px-5 py-2 font-display tracking-wider text-gold-bright hover:bg-gold/10 disabled:opacity-40 transition-colors flex items-center gap-2"
+            className="gold-frame px-5 py-2 tracking-wider text-base text-gold-bright hover:bg-gold/10 disabled:opacity-40 transition-colors flex items-center gap-2"
           >
             {searching ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -107,14 +107,14 @@ function ForgePage() {
             )}
           </button>
         </div>
-        <p className="mt-2 text-center font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+        <p className="mt-2 text-center text-base uppercase tracking-widest text-muted-foreground">
           Powered by SensorTower Ad Intelligence
         </p>
       </form>
 
       {results.length > 0 && (
         <section className="mb-12">
-          <h2 className="font-display text-xs uppercase tracking-[0.3em] text-gold-dim mb-4">
+          <h2 className="font-display text-2xl uppercase tracking-[0.3em] text-gold-dim mb-4">
             Candidates
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -132,10 +132,10 @@ function ForgePage() {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="font-display text-base text-foreground truncate">
+                  <div className="font-display text-2xl text-foreground truncate">
                     {r.name}
                   </div>
-                  <div className="font-mono text-[11px] text-muted-foreground truncate">
+                  <div className="text-base text-muted-foreground truncate">
                     {r.publisher ?? "Unknown publisher"} · {r.platform.toUpperCase()}
                     {r.vertical ? ` · ${r.vertical}` : ""}
                   </div>
@@ -149,7 +149,7 @@ function ForgePage() {
 
       {characters.length > 0 && (
         <section>
-          <h2 className="font-display text-xs uppercase tracking-[0.3em] text-gold-dim mb-4">
+          <h2 className="font-display text-2xl uppercase tracking-[0.3em] text-gold-dim mb-4">
             Your Roster
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -168,13 +168,13 @@ function ForgePage() {
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="font-display text-sm truncate">{c.name}</div>
-                    <div className="font-mono text-[10px] text-muted-foreground truncate">
+                    <div className="font-display text-2xl truncate">{c.name}</div>
+                    <div className="text-base text-muted-foreground truncate">
                       {c.vertical || "—"}
                     </div>
                   </div>
                 </div>
-                <div className="font-mono text-[10px] uppercase tracking-widest text-gold-dim">
+                <div className="text-base uppercase tracking-widest text-gold-dim">
                   {c.status === "analyzed"
                     ? `${c.stats.length} stats · ${c.ads.length} ads`
                     : c.status}

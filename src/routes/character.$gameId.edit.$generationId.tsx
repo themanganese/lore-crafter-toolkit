@@ -35,7 +35,7 @@ function EditPage() {
   if (!gen) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen text-center px-6">
-        <p className="font-mono text-sm text-muted-foreground mb-4">Variant not found.</p>
+        <p className="text-base text-muted-foreground mb-4">Variant not found.</p>
         <Link to="/character/$gameId" params={{ gameId }} className="gold-frame px-4 py-2 font-display text-gold-bright">
           Back to dashboard
         </Link>
@@ -74,20 +74,20 @@ function EditPage() {
   return (
     <div className="px-6 py-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <Link to="/character/$gameId" params={{ gameId }} className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground hover:text-gold-bright flex items-center gap-1.5">
+        <Link to="/character/$gameId" params={{ gameId }} className="text-base uppercase tracking-widest text-muted-foreground hover:text-gold-bright flex items-center gap-1.5">
           <ArrowLeft className="h-3 w-3" /> Back to {character.name}
         </Link>
-        <div className="font-display text-xs uppercase tracking-[0.4em] text-gold-dim">Variant Editor</div>
+        <div className="font-display text-2xl uppercase tracking-[0.4em] text-gold-dim">Variant Editor</div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6">
         <div className="gold-frame p-3 bg-card">
           <img src={gen.imageUrl} alt="" className="w-full h-auto rounded-sm" />
           <div className="flex items-center justify-between mt-3 px-1">
-            <span className="font-mono text-[10px] text-muted-foreground">
+            <span className="text-base text-muted-foreground">
               {new Date(gen.createdAt).toLocaleString()} · {gen.model}
             </span>
-            <a href={gen.imageUrl} target="_blank" rel="noreferrer" download className="font-mono text-[10px] uppercase tracking-widest text-gold-bright hover:underline flex items-center gap-1">
+            <a href={gen.imageUrl} target="_blank" rel="noreferrer" download className="text-base uppercase tracking-widest text-gold-bright hover:underline flex items-center gap-1">
               <Download className="h-3 w-3" /> Download
             </a>
           </div>
@@ -96,16 +96,16 @@ function EditPage() {
         <aside className="space-y-4">
           <div className="panel-grim p-4 space-y-3">
             <label className="block">
-              <span className="font-mono text-[10px] uppercase tracking-widest text-gold-dim">Prompt</span>
+              <span className="text-base uppercase tracking-widest text-gold-dim">Prompt</span>
               <textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 rows={8}
-                className="mt-1 w-full bg-input border border-border rounded-sm px-3 py-2 text-sm font-body focus:outline-none focus:border-gold/60 resize-y"
+                className="mt-1 w-full bg-input border border-border rounded-sm px-3 py-2 text-base focus:outline-none focus:border-gold/60 resize-y"
               />
             </label>
             <label className="block">
-              <span className="font-mono text-[10px] uppercase tracking-widest text-gold-dim">
+              <span className="text-base uppercase tracking-widest text-gold-dim">
                 Edit strength: {strength.toFixed(2)}
               </span>
               <input
@@ -114,14 +114,14 @@ function EditPage() {
                 onChange={(e) => setStrength(parseFloat(e.target.value))}
                 className="mt-1 w-full accent-gold"
               />
-              <p className="font-mono text-[9px] text-muted-foreground mt-1">
+              <p className="text-base text-muted-foreground mt-1">
                 Lower = closer to original. Higher = more change.
               </p>
             </label>
             <button
               onClick={() => runEdit("edit")}
               disabled={working}
-              className="w-full btn-copper px-4 py-2.5 font-display tracking-wider text-sm rounded-sm disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full btn-copper px-4 py-2.5 tracking-wider text-base rounded-sm disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {working ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
               Edit with Scenario (img2img)
@@ -129,17 +129,17 @@ function EditPage() {
             <button
               onClick={() => runEdit("regen")}
               disabled={working}
-              className="w-full gold-frame px-4 py-2 font-mono text-[11px] uppercase tracking-widest text-gold-bright hover:bg-gold/10 disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full gold-frame px-4 py-2 text-base uppercase tracking-widest text-gold-bright hover:bg-gold/10 disabled:opacity-50 flex items-center justify-center gap-2"
             >
               <RefreshCw className="h-3.5 w-3.5" />
               Regenerate from prompt
             </button>
           </div>
           <div className="panel-grim p-4">
-            <div className="font-mono text-[10px] uppercase tracking-widest text-gold-dim mb-2">
+            <div className="text-base uppercase tracking-widest text-gold-dim mb-2">
               How this works
             </div>
-            <p className="font-body text-xs text-foreground/85 leading-relaxed">
+            <p className="text-base text-foreground/85 leading-relaxed">
               New variants are saved to the dashboard's Anvil grid. This tab stays open like a YouTube video — you can keep iterating without losing context.
             </p>
           </div>

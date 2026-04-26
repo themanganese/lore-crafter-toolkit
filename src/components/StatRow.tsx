@@ -8,8 +8,8 @@ export function StatRow({ stat }: { stat: CharacterStat }) {
       <TierBadge tier={stat.tier} size="sm" />
       <div className="min-w-0">
         <div className="flex items-baseline justify-between gap-3">
-          <span className="font-display text-sm text-foreground truncate">{stat.label}</span>
-          <span className="font-mono text-xs text-gold tabular-nums">
+          <span className="font-display text-2xl text-foreground truncate">{stat.label}</span>
+          <span className="text-base text-gold tabular-nums">
             {stat.value.toString().padStart(3, "0")}
           </span>
         </div>
@@ -30,7 +30,7 @@ export function StatRow({ stat }: { stat: CharacterStat }) {
             style={{ width: `${stat.value}%` }}
           />
         </div>
-        <p className="mt-1.5 font-mono text-[11px] text-muted-foreground italic leading-snug">
+        <p className="mt-1.5 text-base text-muted-foreground italic leading-snug">
           {stat.lore}
         </p>
       </div>

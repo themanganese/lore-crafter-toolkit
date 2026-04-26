@@ -23,8 +23,10 @@ function tierFromScore(n: number): Tier {
 function MetaSlot({ label, value }: { label: string; value: string }) {
   return (
     <div className="min-w-0 flex-1 px-4 first:pl-0 last:pr-0 border-r border-border/60 last:border-r-0">
-      <div className="font-mono text-[9px] uppercase tracking-[0.25em] text-gold-dim">{label}</div>
-      <div className="font-display text-sm text-foreground mt-0.5 truncate">{value}</div>
+      <div className="text-base uppercase tracking-[0.25em] text-gold-dim">{label}</div>
+      <div className="text-base font-normal text-foreground mt-0.5 break-words leading-snug">
+        {value}
+      </div>
     </div>
   );
 }
@@ -53,10 +55,10 @@ export function GameHeaderStrip({
   const tier: Tier | null = score ? tierFromScore(score.winProbability) : null;
 
   return (
-    <header className="panel-grim px-5 py-3 flex items-center gap-5">
+    <header className="panel-grim px-5 py-3 flex items-start gap-5 sticky top-0 z-30">
       {/* Cover + title + tier */}
       <div className="flex items-center gap-3 shrink-0 min-w-0 max-w-[26%]">
-        <div className="h-16 w-16 rounded-sm overflow-hidden gold-frame shrink-0">
+        <div className="h-[120px] w-[120px] rounded-sm overflow-hidden gold-frame shrink-0">
           {character.iconUrl ? (
             <img
               src={character.iconUrl}
@@ -73,7 +75,7 @@ export function GameHeaderStrip({
           <h1 className="font-display text-2xl text-gradient-gold leading-none truncate">
             {character.name}
           </h1>
-          <div className="flex items-center gap-2 mt-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+          <div className="flex items-center gap-2 mt-1.5 text-base uppercase tracking-widest text-muted-foreground">
             {tier && <TierBadge tier={tier} size="sm" />}
             <span className="truncate">{character.publisher ?? "Unknown publisher"}</span>
             <span className="text-gold-dim">·</span>
@@ -95,7 +97,7 @@ export function GameHeaderStrip({
         <button
           onClick={onRunAnalysis}
           disabled={analyzing}
-          className="gold-frame px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-widest text-gold-bright hover:bg-gold/10 disabled:opacity-40 flex items-center gap-1.5"
+          className="gold-frame px-2.5 py-1.5 text-base uppercase tracking-widest text-gold-bright hover:bg-gold/10 disabled:opacity-40 flex items-center gap-1.5"
         >
           {analyzing ? (
             <Loader2 className="h-3 w-3 animate-spin" />
@@ -107,7 +109,7 @@ export function GameHeaderStrip({
         {character.aiThoughts.length > 0 && !analyzing && (
           <button
             onClick={onToggleTrace}
-            className="gold-frame px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-gold-bright"
+            className="gold-frame px-2.5 py-1.5 text-base uppercase tracking-widest text-muted-foreground hover:text-gold-bright"
           >
             {showTrace ? "Hide" : "View"} AI
           </button>
@@ -115,13 +117,13 @@ export function GameHeaderStrip({
         <button
           onClick={onShare}
           disabled={character.status !== "analyzed"}
-          className="gold-frame px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-widest text-gold-bright hover:bg-gold/10 disabled:opacity-40 flex items-center gap-1.5"
+          className="gold-frame px-2.5 py-1.5 text-base uppercase tracking-widest text-gold-bright hover:bg-gold/10 disabled:opacity-40 flex items-center gap-1.5"
         >
           <Share2 className="h-3 w-3" /> Share
         </button>
         <button
           onClick={onDelete}
-          className="px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-destructive flex items-center gap-1.5"
+          className="px-2.5 py-1.5 text-base uppercase tracking-widest text-muted-foreground hover:text-destructive flex items-center gap-1.5"
         >
           <Trash2 className="h-3 w-3" /> Remove
         </button>

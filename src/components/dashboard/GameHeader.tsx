@@ -60,7 +60,7 @@ export function GameHeader({ character }: GameHeaderProps) {
     <div className="relative panel-grim hero-spotlight overflow-hidden">
       {/* Top banner */}
       <div className="px-6 pt-5 pb-3 border-b border-border/60">
-        <div className="flex items-center justify-center gap-4 font-display text-xs uppercase tracking-[0.4em] text-gold-dim">
+        <div className="flex items-center justify-center gap-4 font-display text-2xl uppercase tracking-[0.4em] text-gold-dim">
           <span className="opacity-60">Forge</span>
           <span className="text-gold-bright">Character</span>
           <span className="opacity-60">Dossier</span>
@@ -113,7 +113,7 @@ export function GameHeader({ character }: GameHeaderProps) {
           <h1 className="font-display text-3xl md:text-4xl text-gradient-gold mt-6 text-center px-2 truncate max-w-full">
             {character.name}
           </h1>
-          <div className="flex items-center gap-2 mt-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground flex-wrap justify-center">
+          <div className="flex items-center gap-2 mt-1.5 text-base uppercase tracking-widest text-muted-foreground flex-wrap justify-center">
             <span>{character.publisher ?? "Unknown publisher"}</span>
             <span>·</span>
             <span>{character.platform.toUpperCase()}</span>
@@ -125,7 +125,7 @@ export function GameHeader({ character }: GameHeaderProps) {
             )}
           </div>
           {trend?.differentiationAngle && (
-            <p className="font-mono text-[11px] text-foreground/70 italic max-w-md text-center mt-3 leading-relaxed">
+            <p className="text-base text-foreground/70 italic max-w-md text-center mt-3 leading-relaxed">
               "{trend.differentiationAngle}"
             </p>
           )}
@@ -149,7 +149,7 @@ export function GameHeader({ character }: GameHeaderProps) {
                 key={d.key}
                 className="bg-card px-3 py-3 text-center"
               >
-                <div className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
+                <div className="text-base uppercase tracking-widest text-muted-foreground">
                   {d.label}
                 </div>
                 <div className="font-display text-xl text-foreground tabular-nums mt-0.5">
@@ -191,12 +191,12 @@ function EquipmentSlot({
         {icon}
       </div>
       <div className="min-w-0 flex-1">
-        <div className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground truncate">
+        <div className="text-base uppercase tracking-widest text-muted-foreground truncate">
           {label}
         </div>
-        <div className="font-display text-sm text-foreground truncate">
+        <div className="font-display text-2xl text-foreground truncate">
           {value}
-          {suffix && <span className="text-muted-foreground text-xs ml-0.5">{suffix}</span>}
+          {suffix && <span className="text-muted-foreground text-base ml-0.5">{suffix}</span>}
         </div>
       </div>
       {tier && <TierBadge tier={tier} size="sm" />}

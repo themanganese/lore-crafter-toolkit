@@ -21,16 +21,16 @@ export function AdCard({ ad }: { ad: AdCreative }) {
         <div className="absolute top-2 left-2">
           <TierBadge tier={ad.tier} size="sm" />
         </div>
-        <div className="absolute top-2 right-2 px-2 py-0.5 bg-background/80 backdrop-blur font-mono text-[10px] uppercase tracking-wider text-muted-foreground border border-border">
+        <div className="absolute top-2 right-2 px-2 py-0.5 bg-background/80 backdrop-blur text-base uppercase tracking-wider text-muted-foreground border border-border">
           {ad.network}
         </div>
       </div>
       <div className="p-3">
-        <p className="font-display text-sm text-foreground line-clamp-2 leading-snug">
+        <p className="font-display text-2xl text-foreground line-clamp-2 leading-snug">
           {ad.hookLabel}
         </p>
         {ad.estImpressions ? (
-          <p className="mt-1 font-mono text-[10px] text-gold-dim tabular-nums">
+          <p className="mt-1 text-base text-gold-dim tabular-nums">
             ~{Intl.NumberFormat("en", { notation: "compact" }).format(ad.estImpressions)} imp
             {ad.durationDays ? ` · ${ad.durationDays}d` : ""}
           </p>

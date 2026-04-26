@@ -66,7 +66,7 @@ export function GalleryColumn({
     <section className="panel-grim p-5 flex flex-col gap-3 min-h-0 overflow-y-auto">
       {/* ───────── Zone A — Top creatives ───────── */}
       <div className="flex items-baseline justify-between gap-3">
-        <div className="font-display text-[11px] uppercase tracking-[0.4em] text-gold-dim">
+        <div className="font-display text-2xl uppercase tracking-[0.4em] text-gold-dim">
           Top Creatives ·{" "}
           <span className="text-foreground/85 normal-case tracking-normal font-display italic">
             ranked for {character.name}
@@ -75,7 +75,7 @@ export function GalleryColumn({
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as SortKey)}
-          className="bg-input border border-gold/30 rounded-sm px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-foreground/85 focus:outline-none focus:border-gold/60"
+          className="bg-input border border-gold/30 rounded-sm px-2 py-1 text-base uppercase tracking-widest text-foreground/85 focus:outline-none focus:border-gold/60"
           aria-label="Sort creatives"
         >
           <option value="relevance">Relevance</option>
@@ -88,13 +88,13 @@ export function GalleryColumn({
       {/* "Why this ranking" chips */}
       {explainerChips.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
-          <span className="font-mono text-[9px] uppercase tracking-widest text-gold-dim self-center">
+          <span className="text-base uppercase tracking-widest text-gold-dim self-center">
             Why this ranking
           </span>
           {explainerChips.map((chip, i) => (
             <span
               key={i}
-              className="font-mono text-[10px] px-2 py-0.5 rounded-sm bg-gold/8 border border-gold/30 text-foreground/80 italic"
+              className="text-base px-2 py-0.5 rounded-sm bg-gold/8 border border-gold/30 text-foreground/80 italic"
             >
               {chip}
             </span>
@@ -110,7 +110,7 @@ export function GalleryColumn({
           {sorted.length > 5 && (
             <button
               onClick={() => setShowAll((s) => !s)}
-              className="self-start font-mono text-[10px] uppercase tracking-widest text-gold-dim hover:text-gold-bright"
+              className="self-start text-base uppercase tracking-widest text-gold-dim hover:text-gold-bright"
             >
               {showAll ? `Show top 5` : `Show all (${sorted.length})`}
             </button>
@@ -119,7 +119,7 @@ export function GalleryColumn({
       ) : (
         <div className="flex items-center gap-2 px-3 py-4 border border-dashed border-gold/30 rounded-sm">
           <ImageIcon className="h-4 w-4 text-gold-dim" />
-          <span className="font-mono text-[11px] text-muted-foreground italic">
+          <span className="text-base text-muted-foreground italic">
             Awaiting Sensor Tower scrape…
           </span>
         </div>
@@ -158,7 +158,7 @@ export function GalleryColumn({
 
       {/* ───────── Zone D — Variants strip ───────── */}
       <div className="flex items-center justify-between gap-2">
-        <div className="font-display text-[11px] uppercase tracking-[0.4em] text-gold-dim">
+        <div className="font-display text-2xl uppercase tracking-[0.4em] text-gold-dim">
           Variants ({generations.length || fallbackVariants.length})
         </div>
         <button
@@ -170,7 +170,7 @@ export function GalleryColumn({
               el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
             });
           }}
-          className="font-mono text-[10px] uppercase tracking-widest text-gold-dim hover:text-gold-bright flex items-center gap-1"
+          className="text-base uppercase tracking-widest text-gold-dim hover:text-gold-bright flex items-center gap-1"
         >
           <Plus className="h-3 w-3" />
           Compose
@@ -190,7 +190,7 @@ export function GalleryColumn({
               <div className="h-16 w-16 rounded-sm overflow-hidden bg-muted border border-gold/25 group-hover:border-gold/60">
                 <img src={g.imageUrl} alt="" className="h-full w-full object-cover" />
               </div>
-              <span className="font-mono text-[9px] uppercase tracking-widest text-gold-bright">
+              <span className="text-base uppercase tracking-widest text-gold-bright">
                 V{(generations.length - i).toString().padStart(2, "0")}
               </span>
             </a>
@@ -207,14 +207,14 @@ export function GalleryColumn({
                 <div className="h-16 w-16 rounded-sm overflow-hidden bg-muted border border-gold/25 hover:border-gold/60">
                   <img src={g.imageUrl} alt="" className="h-full w-full object-cover" />
                 </div>
-                <span className="font-mono text-[9px] uppercase tracking-widest text-gold-bright">
+                <span className="text-base uppercase tracking-widest text-gold-bright">
                   V{(fallbackVariants.length - i).toString().padStart(2, "0")}
                 </span>
               </a>
             ))}
         </div>
       ) : (
-        <p className="font-mono text-[11px] text-muted-foreground italic">
+        <p className="text-base text-muted-foreground italic">
           No variants forged yet.
         </p>
       )}
@@ -222,7 +222,7 @@ export function GalleryColumn({
       {/* Inline forge buttons for stored briefs (compact). */}
       {briefs.length > 0 && (
         <div className="border-t border-gold/15 pt-2 -mt-1">
-          <div className="font-mono text-[9px] uppercase tracking-widest text-gold-dim mb-1">
+          <div className="text-base uppercase tracking-widest text-gold-dim mb-1">
             Saved briefs ({briefs.length}) — forge into variant
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -238,7 +238,7 @@ export function GalleryColumn({
                 ) : (
                   <Hammer className="h-3 w-3 text-gold-bright shrink-0" />
                 )}
-                <span className="font-display text-[12px] text-foreground truncate">{b.title}</span>
+                <span className="text-base text-foreground truncate">{b.title}</span>
               </button>
             ))}
           </div>
@@ -266,11 +266,11 @@ function CollapsibleSection({
     <div id={title === "Inspired by Top Ads" ? "gallery-zone-b" : undefined}>
       <button onClick={onToggle} className="w-full flex items-center justify-between gap-2 group">
         <div className="text-left">
-          <span className="font-display text-[11px] uppercase tracking-[0.4em] text-gold-dim group-hover:text-gold-bright">
+          <span className="font-display text-2xl uppercase tracking-[0.4em] text-gold-dim group-hover:text-gold-bright">
             {title}
           </span>
           {subtitle && (
-            <span className="font-mono text-[10px] text-muted-foreground italic ml-2">
+            <span className="text-base text-muted-foreground italic ml-2">
               · {subtitle}
             </span>
           )}
@@ -381,7 +381,7 @@ function ManualBriefForm({
   return (
     <div className="space-y-2">
       <label className="block">
-        <span className="font-mono text-[9px] uppercase tracking-widest text-gold-dim">
+        <span className="text-base uppercase tracking-widest text-gold-dim">
           Hook concept
         </span>
         <textarea
@@ -389,11 +389,11 @@ function ManualBriefForm({
           onChange={(e) => setHook(e.target.value)}
           rows={2}
           placeholder="e.g. 3v3 squad rallies for the comeback win"
-          className="mt-1 w-full bg-input border border-border rounded-sm px-2 py-1.5 text-[12px] text-foreground font-body focus:outline-none focus:border-gold/60 resize-none"
+          className="mt-1 w-full bg-input border border-border rounded-sm px-2 py-1.5 text-base text-foreground focus:outline-none focus:border-gold/60 resize-none"
         />
       </label>
       <label className="block">
-        <span className="font-mono text-[9px] uppercase tracking-widest text-gold-dim">
+        <span className="text-base uppercase tracking-widest text-gold-dim">
           Visual direction
         </span>
         <textarea
@@ -401,13 +401,13 @@ function ManualBriefForm({
           onChange={(e) => setVisual(e.target.value)}
           rows={2}
           placeholder="e.g. cinematic close-ups, gold/teal palette, fast cuts"
-          className="mt-1 w-full bg-input border border-border rounded-sm px-2 py-1.5 text-[12px] text-foreground font-body focus:outline-none focus:border-gold/60 resize-none"
+          className="mt-1 w-full bg-input border border-border rounded-sm px-2 py-1.5 text-base text-foreground focus:outline-none focus:border-gold/60 resize-none"
         />
       </label>
       <button
         onClick={forge}
         disabled={forging || !hook.trim() || !visual.trim()}
-        className="w-full btn-copper px-3 py-1.5 font-display tracking-wider text-[12px] rounded-sm disabled:opacity-50 flex items-center justify-center gap-1.5"
+        className="w-full btn-copper px-3 py-1.5 tracking-wider text-base rounded-sm disabled:opacity-50 flex items-center justify-center gap-1.5"
       >
         {forging ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" />
