@@ -1,6 +1,6 @@
 // Inspired-by-Top-Ads agent — server only.
 // Pulls top creatives from a small set of comparable games (manual or auto-suggested
-// from the same vertical), then asks Claude to synthesize 3–4 actionable creative
+// from the same vertical), then asks Claude to synthesize 2 actionable creative
 // briefs the user can immediately forge. The target game's existing brief / character
 // sheet is intentionally ignored — comparable games' top ads ARE the brief.
 
@@ -95,7 +95,7 @@ async function fetchAdsForComparables(comparables: ComparableGame[]) {
       const { ads } = await sensorTowerProvider.fetchTopAds({
         externalId: c.externalId,
         platform: c.platform,
-        limit: 12,
+        limit: 6,
       });
       return { game: c, ads } as ComparableAdsBundle;
     })
@@ -133,17 +133,17 @@ export async function generateInspiredBriefs(args: {
   const compInput = bundles.map((b) => ({
     game: b.game.name,
     publisher: b.game.publisher,
-    ads: b.ads.slice(0, 8).map((a, i) => ({
+    ads: b.ads.slice(0, 5).map((a, i) => ({
       rank: i + 1,
       tier: a.tier,
       network: a.network,
       hook: a.hookLabel,
-      copy: a.rawText?.slice(0, 220),
+      copy: a.rawText?.slice(0, 140),
       duration_days: a.durationDays,
     })),
   }));
 
-  const briefsCount = Math.max(2, Math.min(5, args.briefsCount ?? 4));
+  const briefsCount = Math.max(2, Math.min(5, args.briefsCount ?? 2));
 
   const system = `You are the Silki "Inspired by Top Ads" creative director.
 
@@ -193,7 +193,7 @@ Produce ${briefsCount} inspired briefs.`;
     // handles it well at 2–3× the decode speed of Sonnet, which dominates latency
     // here (typical output is 2–3K tokens of structured fields).
     model: "claude-haiku-4-5",
-    maxTokens: 3000,
+    maxTokens: 1500,
     toolName: "submit_inspired_briefs",
     parameters: {
       type: "object",

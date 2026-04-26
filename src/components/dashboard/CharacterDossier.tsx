@@ -128,7 +128,6 @@ export function CharacterDossier({
         <TabsContent value="gallery">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.6fr] gap-6">
             <GalleryColumn
-              gameId={character.id}
               briefs={character.briefs}
               generations={character.generations}
               gallery={character.gallery}

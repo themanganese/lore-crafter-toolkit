@@ -137,7 +137,7 @@ export function InspiredByTopAdsPanel({
           targetGameName: character.name,
           vertical: character.vertical,
           comparables,
-          briefsCount: 4,
+          briefsCount: 2,
         },
       });
       if (!r.ok) {
@@ -149,9 +149,26 @@ export function InspiredByTopAdsPanel({
       setFailures(r.failures);
       if (r.briefs.length === 0) {
         toast.error("No briefs returned — try different comparables.");
-      } else {
-        toast.success(`${r.briefs.length} inspired briefs ready`);
+        return;
       }
+      const newBriefs: CreativeBrief[] = r.briefs.map((b) => ({
+        id: b.id,
+        title: b.title,
+        targetGameName: character.name,
+        targetHook: b.targetHook,
+        mechanic: b.mechanic,
+        visualCue: b.visualCue,
+        pacing: b.pacing,
+        cta: b.cta,
+        notes: `Inspired by ${b.sourceGame} — "${b.sourceHook}"\n\n${b.notes}`,
+        prompt: b.prompt,
+        createdAt: new Date().toISOString(),
+      }));
+      await saveCharacter({
+        ...character,
+        briefs: [...newBriefs, ...character.briefs],
+      });
+      toast.success(`${newBriefs.length} briefs saved to gallery`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Generation failed");
     } finally {
@@ -159,8 +176,8 @@ export function InspiredByTopAdsPanel({
     }
   }
 
-  async function saveAndForge(b: InspiredBrief) {
-    const brief: CreativeBrief = {
+  function forgeVariant(b: InspiredBrief) {
+    onForge({
       id: b.id,
       title: b.title,
       targetGameName: character.name,
@@ -172,10 +189,7 @@ export function InspiredByTopAdsPanel({
       notes: `Inspired by ${b.sourceGame} — "${b.sourceHook}"\n\n${b.notes}`,
       prompt: b.prompt,
       createdAt: new Date().toISOString(),
-    };
-    await saveCharacter({ ...character, briefs: [brief, ...character.briefs] });
-    onForge(brief);
-    toast.success(`Saved · sent to Anvil`);
+    });
   }
 
   return (
@@ -291,7 +305,7 @@ export function InspiredByTopAdsPanel({
       {briefs.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
           {briefs.map((b) => (
-            <InspiredBriefCard key={b.id} brief={b} onForge={() => saveAndForge(b)} />
+            <InspiredBriefCard key={b.id} brief={b} onForge={() => forgeVariant(b)} />
           ))}
         </div>
       )}
@@ -370,7 +384,7 @@ function InspiredBriefCard({ brief, onForge }: { brief: InspiredBrief; onForge: 
         className="w-full btn-copper px-3 py-2 tracking-wider text-sm rounded-none flex items-center justify-center gap-2"
       >
         <Hammer className="h-3.5 w-3.5" />
-        Save & send to Anvil
+        Forge variant
       </button>
     </div>
   );

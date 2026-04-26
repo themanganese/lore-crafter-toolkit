@@ -1,11 +1,14 @@
 // In-memory run-event store. Survives within a single Worker process; client polls via getRunEvents.
 import type { ThoughtEvent, ThoughtAgent, ThoughtStatus } from "../types";
 
+export type RunResult = Record<string, unknown> | null;
+
 type Run = {
   id: string;
   events: ThoughtEvent[];
   startedAt: number;
   done: boolean;
+  result?: RunResult;
 };
 
 const runs = new Map<string, Run>();
@@ -53,4 +56,15 @@ export function getEvents(runId: string): { events: ThoughtEvent[]; done: boolea
   const run = runs.get(runId);
   if (!run) return { events: [], done: true };
   return { events: run.events, done: run.done };
+}
+
+export function setResult(runId: string, result: RunResult): void {
+  const run = runs.get(runId);
+  if (run) run.result = result;
+}
+
+export function getResult(runId: string): { done: boolean; result: RunResult } {
+  const run = runs.get(runId);
+  if (!run) return { done: true, result: null };
+  return { done: run.done, result: run.result ?? null };
 }

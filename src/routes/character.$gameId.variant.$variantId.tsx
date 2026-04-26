@@ -15,7 +15,7 @@ function VariantPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen text-center px-6">
         <Loader2 className="h-6 w-6 text-gold-dim animate-spin mb-3" />
-        <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+        <p className="text-base uppercase tracking-widest text-muted-foreground">
           Retrieving variant from the codex…
         </p>
       </div>

@@ -6,8 +6,11 @@ import { z } from "zod";
 import { sensorTowerProvider } from "@/lib/adintel/sensortower.server";
 import { extractInsights, draftBrief } from "@/lib/ai/insights.server";
 import { generateImage, editImage } from "@/lib/scenario/client.server";
-import { runFullAnalysisOrchestrated } from "@/lib/silki/orchestrator.server";
-import { startRun, getEvents } from "@/lib/silki/runs.server";
+import {
+  runFullAnalysisOrchestrated,
+  type OrchestratorResult,
+} from "@/lib/silki/orchestrator.server";
+import { startRun, getEvents, setResult, getResult } from "@/lib/silki/runs.server";
 import { callAIChat } from "@/lib/silki/ai.server";
 import {
   suggestComparables,
@@ -92,9 +95,10 @@ export const scryAndAnalyze = createServerFn({ method: "POST" })
     }
   });
 
-// Start a full Silki orchestrated analysis. Returns a runId immediately
-// while the orchestrator runs (we await it here so the client gets the
-// final payload — events are still emitted live for UI streaming).
+// Kick off a full Silki orchestrated analysis. Returns runId immediately;
+// the orchestrator runs in the background and emits events to the in-memory
+// run store. The client polls getRunEvents to stream the trace and calls
+// getRunResult once `done` to fetch the final payload.
 export const startAnalysisRun = createServerFn({ method: "POST" })
   .inputValidator(
     z.object({
@@ -106,22 +110,34 @@ export const startAnalysisRun = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const runId = startRun();
-    // Kick off orchestrator. We await it here (worker doesn't support waitUntil reliably).
-    // Client polls getRunEvents while the await resolves.
-    const result = await runFullAnalysisOrchestrated({
+    // Fire-and-forget. Errors are captured into the run store as a result
+    // so the client poller can surface them.
+    void runFullAnalysisOrchestrated({
       runId,
       externalId: data.externalId,
       platform: data.platform,
       gameName: data.gameName,
       vertical: data.vertical,
-    });
-    return { runId, ...result };
+    })
+      .then((result) => setResult(runId, result as unknown as Record<string, unknown>))
+      .catch((e) => {
+        const msg = e instanceof Error ? e.message : "Analysis failed";
+        setResult(runId, { ok: false, error: msg });
+      });
+    return { runId };
   });
 
 export const getRunEvents = createServerFn({ method: "GET" })
   .inputValidator(z.object({ runId: z.string().min(1) }))
   .handler(async ({ data }) => {
     return getEvents(data.runId);
+  });
+
+export const getRunResult = createServerFn({ method: "GET" })
+  .inputValidator(z.object({ runId: z.string().min(1) }))
+  .handler(async ({ data }) => {
+    const r = getResult(data.runId);
+    return { done: r.done, result: r.result as OrchestratorResult | null };
   });
 
 export const draftCreativeBrief = createServerFn({ method: "POST" })

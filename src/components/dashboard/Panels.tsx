@@ -585,7 +585,7 @@ export function AIThinkingTrace({
         {events.map((e) => (
           <li key={e.id} className="flex items-start gap-2">
             <StatusDot status={e.status} />
-            <span className="text-gold-bright/80 uppercase tracking-widest text-sm shrink-0 w-24">
+            <span className="text-gold-bright/80 uppercase tracking-widest text-sm shrink-0 w-44 whitespace-nowrap">
               {e.agent}
             </span>
             <span
