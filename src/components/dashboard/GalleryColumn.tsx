@@ -2,7 +2,6 @@ import { Hammer, Loader2, Plus } from "lucide-react";
 import type { CreativeBrief, GalleryItem, GeneratedCreative } from "@/lib/types";
 
 interface Props {
-  gameId: string;
   briefs: CreativeBrief[];
   generations: GeneratedCreative[];
   gallery: GalleryItem[];
@@ -11,12 +10,7 @@ interface Props {
   onComposeBrief: () => void;
 }
 
-function variantHref(gameId: string, variantId: string): string {
-  return `/character/${gameId}/variant/${variantId}`;
-}
-
 export function GalleryColumn({
-  gameId,
   briefs,
   generations,
   gallery,
@@ -49,7 +43,7 @@ export function GalleryColumn({
           {generations.map((g, i) => (
             <a
               key={g.id}
-              href={variantHref(gameId, g.id)}
+              href={g.imageUrl}
               target="_blank"
               rel="noreferrer"
               className="group shrink-0 w-16 flex flex-col items-center gap-1"
@@ -67,7 +61,7 @@ export function GalleryColumn({
             fallbackVariants.map((g, i) => (
               <a
                 key={g.id}
-                href={variantHref(gameId, g.generationId ?? g.id)}
+                href={g.imageUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="shrink-0 w-16 flex flex-col items-center gap-1"
