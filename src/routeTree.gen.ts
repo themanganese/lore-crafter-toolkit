@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CharacterGameIdRouteImport } from './routes/character.$gameId'
 import { Route as CharacterGameIdBriefRouteImport } from './routes/character.$gameId.brief'
 import { Route as CharacterGameIdAnvilRouteImport } from './routes/character.$gameId.anvil'
+import { Route as CharacterGameIdVariantVariantIdRouteImport } from './routes/character.$gameId.variant.$variantId'
 import { Route as CharacterGameIdEditGenerationIdRouteImport } from './routes/character.$gameId.edit.$generationId'
 
 const ShareRoute = ShareRouteImport.update({
@@ -47,6 +48,12 @@ const CharacterGameIdAnvilRoute = CharacterGameIdAnvilRouteImport.update({
   path: '/anvil',
   getParentRoute: () => CharacterGameIdRoute,
 } as any)
+const CharacterGameIdVariantVariantIdRoute =
+  CharacterGameIdVariantVariantIdRouteImport.update({
+    id: '/variant/$variantId',
+    path: '/variant/$variantId',
+    getParentRoute: () => CharacterGameIdRoute,
+  } as any)
 const CharacterGameIdEditGenerationIdRoute =
   CharacterGameIdEditGenerationIdRouteImport.update({
     id: '/edit/$generationId',
@@ -62,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/character/$gameId/anvil': typeof CharacterGameIdAnvilRoute
   '/character/$gameId/brief': typeof CharacterGameIdBriefRoute
   '/character/$gameId/edit/$generationId': typeof CharacterGameIdEditGenerationIdRoute
+  '/character/$gameId/variant/$variantId': typeof CharacterGameIdVariantVariantIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -71,6 +79,7 @@ export interface FileRoutesByTo {
   '/character/$gameId/anvil': typeof CharacterGameIdAnvilRoute
   '/character/$gameId/brief': typeof CharacterGameIdBriefRoute
   '/character/$gameId/edit/$generationId': typeof CharacterGameIdEditGenerationIdRoute
+  '/character/$gameId/variant/$variantId': typeof CharacterGameIdVariantVariantIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -81,6 +90,7 @@ export interface FileRoutesById {
   '/character/$gameId/anvil': typeof CharacterGameIdAnvilRoute
   '/character/$gameId/brief': typeof CharacterGameIdBriefRoute
   '/character/$gameId/edit/$generationId': typeof CharacterGameIdEditGenerationIdRoute
+  '/character/$gameId/variant/$variantId': typeof CharacterGameIdVariantVariantIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -92,6 +102,7 @@ export interface FileRouteTypes {
     | '/character/$gameId/anvil'
     | '/character/$gameId/brief'
     | '/character/$gameId/edit/$generationId'
+    | '/character/$gameId/variant/$variantId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -101,6 +112,7 @@ export interface FileRouteTypes {
     | '/character/$gameId/anvil'
     | '/character/$gameId/brief'
     | '/character/$gameId/edit/$generationId'
+    | '/character/$gameId/variant/$variantId'
   id:
     | '__root__'
     | '/'
@@ -110,6 +122,7 @@ export interface FileRouteTypes {
     | '/character/$gameId/anvil'
     | '/character/$gameId/brief'
     | '/character/$gameId/edit/$generationId'
+    | '/character/$gameId/variant/$variantId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -163,6 +176,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CharacterGameIdAnvilRouteImport
       parentRoute: typeof CharacterGameIdRoute
     }
+    '/character/$gameId/variant/$variantId': {
+      id: '/character/$gameId/variant/$variantId'
+      path: '/variant/$variantId'
+      fullPath: '/character/$gameId/variant/$variantId'
+      preLoaderRoute: typeof CharacterGameIdVariantVariantIdRouteImport
+      parentRoute: typeof CharacterGameIdRoute
+    }
     '/character/$gameId/edit/$generationId': {
       id: '/character/$gameId/edit/$generationId'
       path: '/edit/$generationId'
@@ -177,12 +197,14 @@ interface CharacterGameIdRouteChildren {
   CharacterGameIdAnvilRoute: typeof CharacterGameIdAnvilRoute
   CharacterGameIdBriefRoute: typeof CharacterGameIdBriefRoute
   CharacterGameIdEditGenerationIdRoute: typeof CharacterGameIdEditGenerationIdRoute
+  CharacterGameIdVariantVariantIdRoute: typeof CharacterGameIdVariantVariantIdRoute
 }
 
 const CharacterGameIdRouteChildren: CharacterGameIdRouteChildren = {
   CharacterGameIdAnvilRoute: CharacterGameIdAnvilRoute,
   CharacterGameIdBriefRoute: CharacterGameIdBriefRoute,
   CharacterGameIdEditGenerationIdRoute: CharacterGameIdEditGenerationIdRoute,
+  CharacterGameIdVariantVariantIdRoute: CharacterGameIdVariantVariantIdRoute,
 }
 
 const CharacterGameIdRouteWithChildren = CharacterGameIdRoute._addFileChildren(
