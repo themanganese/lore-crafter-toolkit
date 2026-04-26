@@ -183,14 +183,14 @@ export function InspiredByTopAdsPanel({
       {/* Header / explainer */}
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
-          <p className="font-mono text-xs text-muted-foreground max-w-xl leading-relaxed">
+          <p className="text-base text-muted-foreground max-w-xl leading-relaxed">
             Pull top-performing ads from comparable games in <span className="text-gold">{character.vertical || "this vertical"}</span> and let Claude derive ready-to-ship briefs. Your target game's existing brief is intentionally ignored — the competitor ads ARE the brief.
           </p>
         </div>
         <button
           onClick={runSuggest}
           disabled={loadingSuggest}
-          className="gold-frame px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-gold-bright hover:bg-gold/10 disabled:opacity-40 flex items-center gap-1.5 shrink-0"
+          className="gold-frame px-3 py-1.5 text-base uppercase tracking-widest text-gold-bright hover:bg-gold/10 disabled:opacity-40 flex items-center gap-1.5 shrink-0"
         >
           {loadingSuggest ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
           Re-suggest
@@ -199,7 +199,7 @@ export function InspiredByTopAdsPanel({
 
       {/* Comparables list */}
       <div>
-        <div className="font-mono text-[10px] uppercase tracking-widest text-gold-dim mb-2">
+        <div className="text-base uppercase tracking-widest text-gold-dim mb-2">
           Comparable games ({comparables.length})
         </div>
         <div className="flex flex-wrap gap-2">
@@ -208,7 +208,7 @@ export function InspiredByTopAdsPanel({
           ))}
           <button
             onClick={() => setSearchOpen((o) => !o)}
-            className="border border-dashed border-gold/40 rounded-sm px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-gold-dim hover:text-gold-bright hover:border-gold/80 flex items-center gap-1.5"
+            className="border border-dashed border-gold/40 rounded-sm px-3 py-2 text-base uppercase tracking-widest text-gold-dim hover:text-gold-bright hover:border-gold/80 flex items-center gap-1.5"
           >
             <Plus className="h-3 w-3" />
             Add
@@ -225,12 +225,12 @@ export function InspiredByTopAdsPanel({
               onChange={(e) => setSearchQ(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && runSearch()}
               placeholder="Search SensorTower for a comparable game…"
-              className="flex-1 bg-input border border-border rounded-sm px-3 py-2 text-sm text-foreground font-body focus:outline-none focus:border-gold/60"
+              className="flex-1 bg-input border border-border rounded-sm px-3 py-2 text-base text-foreground focus:outline-none focus:border-gold/60"
             />
             <button
               onClick={runSearch}
               disabled={searching || searchQ.trim().length < 2}
-              className="gold-frame px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-gold-bright hover:bg-gold/10 disabled:opacity-40"
+              className="gold-frame px-3 py-2 text-base uppercase tracking-widest text-gold-bright hover:bg-gold/10 disabled:opacity-40"
             >
               {searching ? <Loader2 className="h-3 w-3 animate-spin" /> : "Search"}
             </button>
@@ -249,8 +249,8 @@ export function InspiredByTopAdsPanel({
                     <div className="h-7 w-7 rounded-sm bg-muted/50" />
                   )}
                   <div className="min-w-0 flex-1">
-                    <div className="font-display text-xs text-foreground truncate">{r.name}</div>
-                    <div className="font-mono text-[9px] text-muted-foreground truncate">
+                    <div className="font-display text-2xl text-foreground truncate">{r.name}</div>
+                    <div className="text-base text-muted-foreground truncate">
                       {r.publisher ?? r.platform}
                     </div>
                   </div>
@@ -273,7 +273,7 @@ export function InspiredByTopAdsPanel({
 
       {/* Status — used / failed */}
       {(comparablesUsed.length > 0 || failures.length > 0) && (
-        <div className="flex flex-wrap gap-2 text-[10px] font-mono">
+        <div className="flex flex-wrap gap-2 text-base">
           {comparablesUsed.map((c) => (
             <span key={c.name} className="px-2 py-0.5 bg-gold/10 text-gold border border-gold/30 rounded-sm">
               {c.name} · {c.adsCount} ads
@@ -307,7 +307,7 @@ function ComparableChip({ game, onRemove }: { game: ComparableGame; onRemove: ()
       ) : (
         <div className="h-6 w-6 rounded-sm bg-muted/50" />
       )}
-      <span className="font-display text-xs text-foreground max-w-[140px] truncate">{game.name}</span>
+      <span className="font-display text-2xl text-foreground max-w-[140px] truncate">{game.name}</span>
       <button
         onClick={onRemove}
         className="h-4 w-4 rounded-sm flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/15"
@@ -326,48 +326,48 @@ function InspiredBriefCard({ brief, onForge }: { brief: InspiredBrief; onForge: 
       <div className="p-4 space-y-2">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <div className="font-mono text-[9px] uppercase tracking-widest text-copper">
+            <div className="text-base uppercase tracking-widest text-copper">
               Inspired by {brief.sourceGame}
             </div>
-            <h4 className="font-display text-base text-foreground mt-0.5 leading-tight">
+            <h4 className="font-display text-2xl text-foreground mt-0.5 leading-tight">
               {brief.title}
             </h4>
           </div>
           <Sparkles className="h-3.5 w-3.5 text-gold shrink-0 mt-0.5" />
         </div>
 
-        <p className="font-body text-sm text-foreground/90 leading-snug">{brief.targetHook}</p>
+        <p className="text-base text-foreground/90 leading-snug">{brief.targetHook}</p>
 
         <div className="border-l-2 border-copper/50 pl-2 mt-2">
-          <div className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
+          <div className="text-base uppercase tracking-widest text-muted-foreground">
             Source hook
           </div>
-          <p className="font-mono text-[11px] text-foreground/70 italic line-clamp-2 mt-0.5">
+          <p className="text-base text-foreground/70 italic line-clamp-2 mt-0.5">
             "{brief.sourceHook}"
           </p>
         </div>
 
         <button
           onClick={() => setOpen((o) => !o)}
-          className="font-mono text-[10px] uppercase tracking-widest text-gold-dim hover:text-gold-bright flex items-center gap-1 mt-1"
+          className="text-base uppercase tracking-widest text-gold-dim hover:text-gold-bright flex items-center gap-1 mt-1"
         >
           <ChevronDown className={cn("h-3 w-3 transition-transform", open && "rotate-180")} />
           {open ? "Hide" : "Show"} details
         </button>
 
         {open && (
-          <div className="pt-2 space-y-2 text-[11px] font-mono text-foreground/80 border-t border-border/60 mt-2">
+          <div className="pt-2 space-y-2 text-base text-foreground/80 border-t border-border/60 mt-2">
             <KV k="Mechanic" v={brief.mechanic} />
             <KV k="Visual cue" v={brief.visualCue} />
             <KV k="Pacing" v={brief.pacing} />
             <KV k="CTA" v={brief.cta} />
-            <KV k="Scenario prompt" v={brief.prompt} mono />
+            <KV k="Scenario prompt" v={brief.prompt} />
           </div>
         )}
       </div>
       <button
         onClick={onForge}
-        className="w-full btn-copper px-3 py-2 font-display tracking-wider text-sm rounded-none flex items-center justify-center gap-2"
+        className="w-full btn-copper px-3 py-2 tracking-wider text-base rounded-none flex items-center justify-center gap-2"
       >
         <Hammer className="h-3.5 w-3.5" />
         Save & send to Anvil
@@ -376,11 +376,11 @@ function InspiredBriefCard({ brief, onForge }: { brief: InspiredBrief; onForge: 
   );
 }
 
-function KV({ k, v, mono }: { k: string; v: string; mono?: boolean }) {
+function KV({ k, v }: { k: string; v: string }) {
   return (
     <div>
-      <div className="text-[9px] uppercase tracking-widest text-gold-dim">{k}</div>
-      <div className={cn("text-foreground/80 leading-snug", mono ? "font-mono text-[10px]" : "font-body text-xs")}>
+      <div className="text-base uppercase tracking-widest text-gold-dim">{k}</div>
+      <div className="text-base text-foreground/80 leading-snug">
         {v}
       </div>
     </div>

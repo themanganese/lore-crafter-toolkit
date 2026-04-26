@@ -139,7 +139,7 @@
   }
 
   html {
-    font-size: 16px; /* 1 rem = 16 px; text-sm = 14 px, text-xs = 12 px (= 12 pt floor) */
+    font-size: 16px; /* 1 rem = 16 px = 12 pt body floor; 1.333 rem = 21.33 px = 16 pt heading floor */
   }
 
   html, body {
@@ -150,11 +150,7 @@
   body {
     font-family: var(--font-body);
     font-size: 1rem; /* 16 px default */
-    background-image:
-      /* paper grain — warm linen meets cool cyan breath */
-      radial-gradient(circle at 25% 15%, color-mix(in oklab, var(--bronze) 4%, transparent) 0%, transparent 30%),
-      radial-gradient(circle at 80% 80%, color-mix(in oklab, var(--cyan) 4%, transparent) 0%, transparent 35%),
-      radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--parchment) 55%, transparent) 0%, transparent 70%);
+    background-color: #FEF5EC;
     background-attachment: fixed;
   }
 
@@ -179,11 +175,10 @@
     font-family: var(--font-mono);
   }
 
-  /* ── Global 12 pt floor (12px minimum at any base size) ── */
-  * {
-    min-font-size: 12px; /* future-proof hint */
+  /* ── Global typographic floors: body ≥ 12 pt (16 px), headings ≥ 16 pt (≈ 21.33 px) ── */
+  h1, h2, h3, h4, h5, h6 {
+    font-size: max(1.333rem, 1em); /* never below 16 pt for any heading */
   }
-  .text-xs { font-size: 0.75rem; } /* 12px at default 16px base = exactly 12pt floor */
 }
 
 @layer utilities {
@@ -216,11 +211,7 @@
   }
 
   .text-gradient-gold {
-    background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 55%, var(--bronze) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+    color: #B65F3A;
   }
 
   .glow-gold {
@@ -252,14 +243,12 @@
   }
 
   .parchment-bg {
-    background:
-      radial-gradient(ellipse at center, color-mix(in oklab, var(--parchment) 60%, transparent) 0%, transparent 70%),
-      var(--card);
+    background: #B65F3A;
   }
 
   /* Copper CTA button */
   .btn-copper {
-    background: linear-gradient(180deg, var(--copper), color-mix(in oklab, var(--copper) 85%, var(--bronze)));
+    background: #B65F3A;
     color: var(--accent-foreground);
     border: 1px solid color-mix(in oklab, var(--copper) 80%, var(--bronze));
     box-shadow:
@@ -300,23 +289,12 @@
   }
 
   .hero-spotlight {
-    background:
-      radial-gradient(ellipse at center top,
-        color-mix(in oklab, var(--gold-bright) 14%, transparent) 0%,
-        transparent 55%),
-      radial-gradient(ellipse at center,
-        color-mix(in oklab, var(--parchment) 70%, transparent) 0%,
-        transparent 80%);
+    background: #B65F3A;
   }
 
   .ornate-rule {
     height: 1px;
-    background: linear-gradient(90deg,
-      transparent 0%,
-      color-mix(in oklab, var(--gold) 50%, transparent) 20%,
-      color-mix(in oklab, var(--gold-bright) 70%, transparent) 50%,
-      color-mix(in oklab, var(--gold) 50%, transparent) 80%,
-      transparent 100%);
+    background: #B65F3A;
   }
 
   .fab-glow {
@@ -349,7 +327,7 @@
     padding: 0.75rem 1.25rem;
     font-family: var(--font-body);
     font-weight: 600;
-    font-size: 0.8125rem; /* 13px — above the 12px floor */
+    font-size: 1rem; /* 16 px = 12 pt body floor */
     color: var(--color-muted-foreground);
     border-bottom: 2px solid transparent;
     margin-bottom: -1px;

@@ -17,37 +17,37 @@ export function Roster() {
       >
         <div className="flex items-center gap-2">
           <Flame className="h-5 w-5 text-gold ember-flicker" />
-          <span className="font-display text-lg tracking-wider text-gradient-gold">
+          <span className="font-display text-2xl tracking-wider text-gradient-gold">
             Forge
           </span>
         </div>
-        <p className="font-mono text-[10px] text-muted-foreground mt-1 uppercase tracking-widest">
+        <p className="text-base text-muted-foreground mt-1 uppercase tracking-widest">
           by Silki
         </p>
       </button>
 
       <Link
         to="/"
-        className="mx-3 mt-3 px-3 py-2 flex items-center gap-2 gold-frame text-gold-bright text-sm font-display tracking-wide hover:bg-gold/10 transition-colors"
+        className="mx-3 mt-3 px-3 py-2 flex items-center gap-2 gold-frame text-gold-bright text-base tracking-wide hover:bg-gold/10 transition-colors"
       >
         <Plus className="h-4 w-4" />
         Forge new character
       </Link>
 
       <div className="px-4 mt-5 mb-2">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+        <p className="text-base uppercase tracking-widest text-muted-foreground">
           Roster
         </p>
       </div>
 
       <div className="flex-1 overflow-y-auto px-2 pb-4 space-y-1">
         {loading && (
-          <div className="px-3 py-2 text-xs text-muted-foreground font-mono">Awakening…</div>
+          <div className="px-3 py-2 text-base text-muted-foreground">Awakening…</div>
         )}
         {!loading && characters.length === 0 && (
           <div className="px-3 py-6 text-center">
             <Skull className="h-8 w-8 text-muted-foreground mx-auto mb-2 opacity-40" />
-            <p className="text-xs text-muted-foreground font-mono leading-relaxed">
+            <p className="text-base text-muted-foreground leading-relaxed">
               No souls have been<br />analyzed yet.
             </p>
           </div>
@@ -75,23 +75,23 @@ export function Roster() {
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <div className="font-display text-sm truncate text-foreground">{c.name}</div>
+                <div className="font-display text-2xl truncate text-foreground">{c.name}</div>
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[10px] text-muted-foreground truncate">
+                  <span className="text-base text-muted-foreground truncate">
                     {c.vertical || "—"}
                   </span>
                   {c.status === "analyzed" && c.stats.length > 0 && (
-                    <span className={cn("font-display text-xs", TIER_TEXT[topTier])}>
+                    <span className={cn("font-display text-2xl", TIER_TEXT[topTier])}>
                       {topTier}
                     </span>
                   )}
                   {c.status === "scrying" && (
-                    <span className="font-mono text-[10px] text-ember ember-flicker">
+                    <span className="text-base text-ember ember-flicker">
                       scrying…
                     </span>
                   )}
                   {c.status === "error" && (
-                    <span className="font-mono text-[10px] text-destructive">err</span>
+                    <span className="text-base text-destructive">err</span>
                   )}
                 </div>
               </div>
@@ -102,7 +102,7 @@ export function Roster() {
 
       <Link
         to="/settings"
-        className="px-5 py-3 border-t border-border font-mono text-[11px] uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+        className="px-5 py-3 border-t border-border text-base uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
       >
         Settings
       </Link>

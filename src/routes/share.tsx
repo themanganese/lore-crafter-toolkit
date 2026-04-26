@@ -58,7 +58,7 @@ function SharePage() {
       <div className="flex flex-col items-center justify-center min-h-screen text-center px-6">
         <Skull className="h-12 w-12 text-muted-foreground mb-4" />
         <h2 className="font-display text-2xl text-foreground mb-2">Snapshot unreadable</h2>
-        <p className="font-mono text-sm text-muted-foreground mb-4">{error}</p>
+        <p className="text-base text-muted-foreground mb-4">{error}</p>
         <Link to="/" className="gold-frame px-4 py-2 font-display text-gold-bright">
           Go to Forge
         </Link>
@@ -68,7 +68,7 @@ function SharePage() {
 
   if (!payload) {
     return (
-      <div className="flex items-center justify-center min-h-screen font-mono text-xs text-muted-foreground">
+      <div className="flex items-center justify-center min-h-screen text-base text-muted-foreground">
         Decoding…
       </div>
     );
@@ -79,12 +79,12 @@ function SharePage() {
   return (
     <div className="px-8 py-8 max-w-7xl mx-auto">
       <div className="mb-6 flex items-center justify-between">
-        <div className="font-mono text-[10px] uppercase tracking-widest text-gold-dim">
+        <div className="text-base uppercase tracking-widest text-gold-dim">
           Shared snapshot · read-only · exported {new Date(payload.exportedAt).toLocaleString()}
         </div>
         <button
           onClick={fork}
-          className="gold-frame px-4 py-2 font-display tracking-wider text-gold-bright hover:bg-gold/10 flex items-center gap-2"
+          className="gold-frame px-4 py-2 tracking-wider text-base text-gold-bright hover:bg-gold/10 flex items-center gap-2"
         >
           <Download className="h-4 w-4" />
           Fork into roster
@@ -100,7 +100,7 @@ function SharePage() {
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <div className="font-mono text-[10px] uppercase tracking-widest text-gold-dim">
+          <div className="text-base uppercase tracking-widest text-gold-dim">
             {c.publisher ?? "Unknown"} · {c.platform.toUpperCase()} · {c.vertical}
           </div>
           <h1 className="font-display text-4xl text-gradient-gold mt-1">{c.name}</h1>
@@ -108,17 +108,17 @@ function SharePage() {
       </header>
 
       {c.stats.length === 0 ? (
-        <p className="font-mono text-sm text-muted-foreground">No analysis in this snapshot.</p>
+        <p className="text-base text-muted-foreground">No analysis in this snapshot.</p>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="panel-grim p-6">
-            <h3 className="font-display text-xs uppercase tracking-[0.3em] text-gold-dim mb-4">
+            <h3 className="font-display text-2xl uppercase tracking-[0.3em] text-gold-dim mb-4">
               Stat Radar
             </h3>
             <StatRadar stats={c.stats} />
           </div>
           <div className="panel-grim p-6">
-            <h3 className="font-display text-xs uppercase tracking-[0.3em] text-gold-dim mb-4">
+            <h3 className="font-display text-2xl uppercase tracking-[0.3em] text-gold-dim mb-4">
               Attributes
             </h3>
             <div className="space-y-1">
@@ -128,7 +128,7 @@ function SharePage() {
             </div>
           </div>
           <div className="panel-grim p-6">
-            <h3 className="font-display text-xs uppercase tracking-[0.3em] text-gold-dim mb-4 flex items-center gap-2">
+            <h3 className="font-display text-2xl uppercase tracking-[0.3em] text-gold-dim mb-4 flex items-center gap-2">
               <Sword className="h-3.5 w-3.5" />
               Equipped Hooks
             </h3>
@@ -138,8 +138,8 @@ function SharePage() {
                   <div className="flex items-start gap-3">
                     <TierBadge tier={h.tier} size="sm" />
                     <div>
-                      <p className="font-display text-sm text-foreground">{h.label}</p>
-                      <p className="mt-1 font-mono text-[11px] text-muted-foreground italic leading-snug">
+                      <p className="font-display text-2xl text-foreground">{h.label}</p>
+                      <p className="mt-1 text-base text-muted-foreground italic leading-snug">
                         {h.description}
                       </p>
                     </div>
@@ -153,13 +153,13 @@ function SharePage() {
 
       {c.codex.length > 0 && (
         <div className="panel-grim p-6 mt-6">
-          <h3 className="font-display text-xs uppercase tracking-[0.3em] text-gold-dim mb-4 flex items-center gap-2">
+          <h3 className="font-display text-2xl uppercase tracking-[0.3em] text-gold-dim mb-4 flex items-center gap-2">
             <ScrollText className="h-3.5 w-3.5" />
             Codex
           </h3>
           <ul className="space-y-3">
             {c.codex.map((line, i) => (
-              <li key={i} className="flex items-start gap-3 font-mono text-sm text-foreground/90 leading-relaxed">
+              <li key={i} className="flex items-start gap-3 text-base text-foreground/90 leading-relaxed">
                 <span className="text-gold mt-0.5">⌑</span>
                 <span>{line}</span>
               </li>

@@ -84,7 +84,7 @@ export function RevenueForecastChart({ forecast }: { forecast: RevenueForecast }
             dataKey="day"
             tick={{
               fill: "#8a7050",
-              fontSize: 11,
+              fontSize: 16,
               fontFamily: "var(--font-body)",
             }}
             axisLine={{ stroke: "var(--color-border)" }}
@@ -96,13 +96,13 @@ export function RevenueForecastChart({ forecast }: { forecast: RevenueForecast }
             domain={[0, maxY]}
             tick={{
               fill: "#8a7050",
-              fontSize: 11,
+              fontSize: 16,
               fontFamily: "var(--font-body)",
             }}
             tickFormatter={formatUsd}
             axisLine={false}
             tickLine={false}
-            width={48}
+            width={64}
           />
           <Tooltip
             content={(props) => {
@@ -113,7 +113,7 @@ export function RevenueForecastChart({ forecast }: { forecast: RevenueForecast }
               return (
                 <div
                   className="bg-card border border-gold/60 rounded-sm px-3 py-2"
-                  style={{ fontFamily: "var(--font-display)", fontSize: 12 }}
+                  style={{ fontFamily: "var(--font-body)", fontSize: 16 }}
                 >
                   <div className="text-foreground/85 mb-1">
                     {label === 0 ? "Day 0 (baseline)" : `Day ${label}`}
@@ -123,7 +123,7 @@ export function RevenueForecastChart({ forecast }: { forecast: RevenueForecast }
                   {row.assumptions.length > 0 && (
                     <div
                       className="mt-1 text-muted-foreground"
-                      style={{ fontFamily: "var(--font-mono)", fontSize: 10 }}
+                      style={{ fontFamily: "var(--font-body)", fontSize: 16 }}
                     >
                       Assumptions · {row.assumptions.join(" · ")}
                     </div>

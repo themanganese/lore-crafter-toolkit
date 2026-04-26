@@ -52,7 +52,7 @@ function WinProbabilityRing({ score, confidence }: { score: number; confidence: 
           </div>
         </div>
       </div>
-      <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+      <div className="mt-2 text-base uppercase tracking-[0.25em] text-muted-foreground">
         / 100 · {confidence} confidence
       </div>
     </div>
@@ -63,12 +63,12 @@ function StatLine({ label, value }: { label: string; value: number }) {
   const isStrong = value >= 60;
   return (
     <div className="flex items-baseline justify-between py-2 border-b border-gold/15 last:border-0">
-      <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/75">
+      <span className="text-base uppercase tracking-[0.2em] text-foreground/75">
         {label}
       </span>
       <span
         className={cn(
-          "font-display text-base tabular-nums",
+          "font-display text-2xl tabular-nums",
           isStrong ? "text-gold-bright" : "text-foreground/85",
         )}
       >
@@ -83,8 +83,8 @@ function HookRow({ hook }: { hook: { label: string; description: string; tier: T
     <div className="group flex items-center gap-2.5 py-1.5">
       <TierBadge tier={hook.tier} size="sm" />
       <div className="min-w-0 flex-1">
-        <div className="font-display text-sm text-foreground truncate">{hook.label}</div>
-        <div className="font-mono text-[10px] text-muted-foreground italic leading-snug max-h-0 overflow-hidden group-hover:max-h-12 transition-[max-height] duration-200">
+        <div className="font-display text-2xl text-foreground truncate">{hook.label}</div>
+        <div className="text-base text-muted-foreground italic leading-snug max-h-0 overflow-hidden group-hover:max-h-12 transition-[max-height] duration-200">
           {hook.description}
         </div>
       </div>
@@ -95,14 +95,14 @@ function HookRow({ hook }: { hook: { label: string; description: string; tier: T
 export function TargetColumn({ breakdown, topHooks }: Props) {
   return (
     <section className="panel-grim p-6 flex flex-col gap-5 min-h-0 overflow-y-auto">
-      <div className="font-display text-[11px] uppercase tracking-[0.4em] text-gold-dim">
+      <div className="font-display text-2xl uppercase tracking-[0.4em] text-gold-dim">
         Target
       </div>
 
       {breakdown ? (
         <WinProbabilityRing score={breakdown.winProbability} confidence={breakdown.confidence} />
       ) : (
-        <div className="h-36 flex items-center justify-center font-mono text-[11px] text-muted-foreground italic">
+        <div className="h-36 flex items-center justify-center text-base text-muted-foreground italic">
           Awaiting score…
         </div>
       )}
@@ -111,14 +111,14 @@ export function TargetColumn({ breakdown, topHooks }: Props) {
         {breakdown ? (
           breakdown.dimensions.map((d) => <StatLine key={d.key} label={d.label} value={d.value} />)
         ) : (
-          <p className="font-mono text-[11px] text-muted-foreground italic">
+          <p className="text-base text-muted-foreground italic">
             5-dimension scores pending.
           </p>
         )}
       </div>
 
       <div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-gold-dim mb-1.5">
+        <div className="text-base uppercase tracking-[0.25em] text-gold-dim mb-1.5">
           Equipped Hooks ({topHooks.length})
         </div>
         {topHooks.length > 0 ? (
@@ -128,7 +128,7 @@ export function TargetColumn({ breakdown, topHooks }: Props) {
             ))}
           </div>
         ) : (
-          <p className="font-mono text-[11px] text-muted-foreground italic">None equipped.</p>
+          <p className="text-base text-muted-foreground italic">None equipped.</p>
         )}
       </div>
     </section>

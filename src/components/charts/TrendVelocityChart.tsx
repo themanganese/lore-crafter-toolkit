@@ -66,7 +66,7 @@ export function TrendVelocityChart({
 
   if (top.length === 0) {
     return (
-      <div className="h-[180px] flex items-center justify-center font-mono text-[11px] text-muted-foreground italic">
+      <div className="h-[180px] flex items-center justify-center text-base text-muted-foreground italic">
         Awaiting pattern detection…
       </div>
     );
@@ -86,7 +86,7 @@ export function TrendVelocityChart({
             dataKey="day"
             tick={{
               fill: "#8a7050",
-              fontSize: 11,
+              fontSize: 16,
               fontFamily: "var(--font-body)",
             }}
             axisLine={{ stroke: "var(--color-border)" }}
@@ -99,12 +99,12 @@ export function TrendVelocityChart({
             ticks={[0, 50, 100]}
             tick={{
               fill: "#8a7050",
-              fontSize: 11,
+              fontSize: 16,
               fontFamily: "var(--font-body)",
             }}
             axisLine={false}
             tickLine={false}
-            width={32}
+            width={40}
           />
           <Tooltip
             content={(props) => {
@@ -113,7 +113,7 @@ export function TrendVelocityChart({
               return (
                 <div
                   className="bg-card border border-gold/60 rounded-sm px-3 py-2"
-                  style={{ fontFamily: "var(--font-display)", fontSize: 12 }}
+                  style={{ fontFamily: "var(--font-body)", fontSize: 16 }}
                 >
                   <div className="text-foreground/85 mb-1">Day {label}</div>
                   {payload.map((entry, i) => {
@@ -143,7 +143,7 @@ export function TrendVelocityChart({
             height={20}
             wrapperStyle={{
               fontFamily: "var(--font-body)",
-              fontSize: 11,
+              fontSize: 16,
               fontStyle: "italic",
               color: "var(--color-muted-foreground)",
             }}

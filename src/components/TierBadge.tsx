@@ -20,10 +20,10 @@ export function TierBadge({
 }) {
   const sizeClass =
     size === "sm"
-      ? "h-6 w-6 text-xs"
+      ? "h-7 w-7 text-base"
       : size === "lg"
       ? "h-12 w-12 text-2xl"
-      : "h-8 w-8 text-base";
+      : "h-9 w-9 text-2xl";
   return (
     <div
       className={cn(

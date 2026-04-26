@@ -112,8 +112,8 @@ export function AskAIFloating() {
           <header className="px-4 py-3 border-b border-border bg-parchment flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-gold-bright" />
             <div className="min-w-0 flex-1">
-              <div className="font-display text-sm text-foreground">Ask Silki</div>
-              <div className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground truncate">
+              <div className="font-display text-2xl text-foreground">Ask Silki</div>
+              <div className="text-base uppercase tracking-widest text-muted-foreground truncate">
                 {character ? `Context: ${character.name}` : "General creative-strategy"}
               </div>
             </div>
@@ -122,7 +122,7 @@ export function AskAIFloating() {
           <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
             {messages.length === 0 && (
               <div className="text-center py-6">
-                <p className="font-mono text-xs text-muted-foreground mb-3">
+                <p className="text-base text-muted-foreground mb-3">
                   Ask anything about creative strategy.
                 </p>
                 <div className="space-y-1.5">
@@ -130,7 +130,7 @@ export function AskAIFloating() {
                     <button
                       key={p}
                       onClick={() => send(p)}
-                      className="block w-full text-left px-3 py-2 rounded-sm border border-border hover:border-gold/50 hover:bg-gold/5 font-mono text-[11px] text-foreground/85 transition-colors"
+                      className="block w-full text-left px-3 py-2 rounded-sm border border-border hover:border-gold/50 hover:bg-gold/5 text-base text-foreground/85 transition-colors"
                     >
                       {p}
                     </button>
@@ -142,14 +142,14 @@ export function AskAIFloating() {
               <div
                 key={m.id}
                 className={cn(
-                  "rounded-sm p-3 max-w-[92%] text-sm",
+                  "rounded-sm p-3 max-w-[92%] text-base",
                   m.role === "user"
                     ? "ml-auto bg-gold/15 border border-gold/30 text-foreground"
                     : "bg-muted/40 border border-border text-foreground/90"
                 )}
               >
                 {m.role === "assistant" ? (
-                  <div className="prose prose-sm max-w-none prose-headings:font-display prose-headings:text-foreground prose-p:text-foreground/90 prose-strong:text-foreground prose-li:text-foreground/85 prose-code:text-gold prose-code:bg-muted prose-code:px-1 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
+                  <div className="prose prose-base max-w-none prose-headings:font-display prose-headings:text-foreground prose-p:text-foreground/90 prose-strong:text-foreground prose-li:text-foreground/85 prose-code:text-gold prose-code:bg-muted prose-code:px-1 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
                     <ReactMarkdown>{m.content}</ReactMarkdown>
                   </div>
                 ) : (
@@ -158,7 +158,7 @@ export function AskAIFloating() {
               </div>
             ))}
             {sending && (
-              <div className="flex items-center gap-2 text-muted-foreground font-mono text-xs">
+              <div className="flex items-center gap-2 text-muted-foreground text-base">
                 <Loader2 className="h-3 w-3 animate-spin" />
                 Thinking…
               </div>
@@ -183,7 +183,7 @@ export function AskAIFloating() {
               }}
               rows={1}
               placeholder={character ? `Ask about ${character.name}…` : "Ask Silki…"}
-              className="flex-1 resize-none bg-input border border-border rounded-sm px-3 py-2 text-sm font-body focus:outline-none focus:border-gold/60 max-h-32"
+              className="flex-1 resize-none bg-input border border-border rounded-sm px-3 py-2 text-base focus:outline-none focus:border-gold/60 max-h-32"
             />
             <button
               type="submit"

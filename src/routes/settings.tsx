@@ -15,15 +15,15 @@ function SettingsPage() {
       </header>
 
       <section className="panel-grim p-6 mb-6">
-        <h2 className="font-display text-xs uppercase tracking-[0.3em] text-gold-dim mb-4">
+        <h2 className="font-display text-2xl uppercase tracking-[0.3em] text-gold-dim mb-4">
           API Keys
         </h2>
-        <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-3">
+        <p className="text-base text-muted-foreground leading-relaxed mb-3">
           API keys for SensorTower (ad intelligence) and Scenario (creative
           generation) are stored as server secrets and never exposed to the
           browser. To rotate them, use the Lovable secrets panel.
         </p>
-        <ul className="font-mono text-xs space-y-1.5">
+        <ul className="text-base space-y-1.5">
           <li className="flex justify-between">
             <span className="text-muted-foreground">SENSORTOWER_API_KEY</span>
             <span className="text-gold">configured · server-only</span>
@@ -40,10 +40,10 @@ function SettingsPage() {
       </section>
 
       <section className="panel-grim p-6 mb-6">
-        <h2 className="font-display text-xs uppercase tracking-[0.3em] text-gold-dim mb-4">
+        <h2 className="font-display text-2xl uppercase tracking-[0.3em] text-gold-dim mb-4">
           Storage
         </h2>
-        <p className="font-mono text-xs text-muted-foreground leading-relaxed">
+        <p className="text-base text-muted-foreground leading-relaxed">
           All characters, briefs, and generated creatives are stored locally in
           your browser (IndexedDB). Use the <em>Share</em> action on any
           character to export a portable snapshot URL.

@@ -27,8 +27,8 @@ export function StatRadar({ stats }: { stats: CharacterStat[] }) {
             dataKey="label"
             tick={{
               fill: "var(--color-foreground)",
-              fontSize: 10,
-              fontFamily: "var(--font-mono)",
+              fontSize: 16,
+              fontFamily: "var(--font-body)",
             }}
           />
           <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
