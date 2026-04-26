@@ -2,8 +2,26 @@
 // Docs: https://docs.scenario.com/reference/post_v1-generate-txt2img
 // Auth: Basic <base64(API_KEY:API_SECRET)> OR Bearer for newer accounts.
 // We accept "key:secret" or a single bearer token in SCENARIO_API_KEY.
-
 const BASE = "https://api.cloud.scenario.com/v1";
+
+// Demo mode — when MOCK_SCENARIO=1 in .env.local, skip live API calls
+// and return placeholder images. This keeps the demo deterministic
+// regardless of Scenario API availability or plan permissions.
+const MOCK_SCENARIO = process.env.MOCK_SCENARIO === "1";
+
+const MOCK_IMAGES = [
+  "https://picsum.photos/seed/forge1/1024/1024",
+  "https://picsum.photos/seed/forge2/1024/1024",
+  "https://picsum.photos/seed/forge3/1024/1024",
+  "https://picsum.photos/seed/forge4/1024/1024",
+];
+
+function pickMockImage(prompt: string): string {
+  // Deterministic pick based on prompt — same prompt always returns same image
+  let hash = 0;
+  for (let i = 0; i < prompt.length; i++) hash = (hash * 31 + prompt.charCodeAt(i)) | 0;
+  return MOCK_IMAGES[Math.abs(hash) % MOCK_IMAGES.length];
+}
 
 function authHeader() {
   const raw = process.env.SCENARIO_API_KEY;
@@ -28,6 +46,15 @@ export async function generateImage(args: {
   width?: number;
   height?: number;
 }): Promise<ScenarioGenResult> {
+  if (MOCK_SCENARIO) {
+    // Simulate API latency so the loading state still feels real in the demo
+    await new Promise((r) => setTimeout(r, 1200));
+    return {
+      imageUrl: pickMockImage(args.prompt),
+      jobId: "mock-job",
+      model: args.modelId || "mock_model",
+    };
+  }
   // Default to a generally available foundation model id; user can override later.
   const modelId = args.modelId || "model_default";
 
@@ -112,6 +139,14 @@ export async function editImage(args: {
   width?: number;
   height?: number;
 }): Promise<ScenarioGenResult> {
+  if (MOCK_SCENARIO) {
+    await new Promise((r) => setTimeout(r, 1200));
+    return {
+      imageUrl: pickMockImage(args.prompt),
+      jobId: "mock-job",
+      model: args.modelId || "mock_model",
+    };
+  }
   const modelId = args.modelId || "model_default";
 
   const submit = await fetch(`${BASE}/generate/img2img`, {
