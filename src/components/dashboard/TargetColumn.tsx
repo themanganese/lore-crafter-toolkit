@@ -1,11 +1,21 @@
-import type { ScoreBreakdown, Tier } from "@/lib/types";
+import type { ScoreBreakdown, Tier, TrendAnalysis, PatternTag } from "@/lib/types";
 import { TierBadge } from "@/components/TierBadge";
 import { cn } from "@/lib/utils";
 
 interface Props {
   breakdown?: ScoreBreakdown;
   topHooks: { label: string; description: string; tier: Tier }[];
+  trend?: TrendAnalysis;
 }
+
+const TAG_STYLES: Record<PatternTag, string> = {
+  lead: "bg-gold-bright/20 text-gold-bright border-gold-bright/60",
+  safe: "bg-gold/10 text-gold border-gold/40",
+  watch: "bg-copper/15 text-copper border-copper/50",
+  caution: "bg-bronze/15 text-bronze border-bronze/50",
+  filler: "bg-iron/25 text-foreground/60 border-iron/40",
+  avoid: "bg-destructive/12 text-destructive border-destructive/40",
+};
 
 function WinProbabilityRing({ score, confidence }: { score: number; confidence: string }) {
   const r = 56;
