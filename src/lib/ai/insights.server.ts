@@ -144,7 +144,15 @@ export async function draftBrief(args: {
   notes: string;
   prompt: string;
 }> {
-  const system = `You are a creative director for mobile game UA ads. Given a competitor's "character sheet" of winning patterns, you draft a creative brief tailored for the user's game. Be specific and shippable.`;
+  const system = `You are a creative director for mobile game UA ads. Given a competitor's "character sheet" of winning patterns, you draft a creative brief tailored for the user's game. Be specific and shippable.
+
+Strict length limits — be terse:
+- title: ≤ 8 words
+- target_hook: ≤ 25 words, one sentence
+- mechanic / visual_cue / pacing / cta / notes: ≤ 30 words each
+- scenario_prompt: 60–120 words, dense imagery for a text-to-image model
+
+No filler. No hedging. Imperative voice for cta and mechanic.`;
 
   const user = `Competitor character: ${args.character.name} (${args.character.vertical})
 Top stats: ${args.character.stats.map((s) => `${s.label} ${s.value}`).join(", ")}
@@ -170,6 +178,10 @@ Draft a creative brief that adapts the competitor's winning patterns for the tar
   const p = await callAITool<AIOut>({
     system,
     user,
+    // Brief drafting is template-shaped creative writing — Haiku 4.5 handles
+    // it well at 2–3× the decode speed of Sonnet, which dominates latency here.
+    model: "claude-haiku-4-5",
+    maxTokens: 2000,
     toolName: "submit_brief",
     parameters: {
       type: "object",
