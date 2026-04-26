@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { X } from "lucide-react";
 import type { GameCharacter, CreativeBrief, ThoughtEvent } from "@/lib/types";
 import { GameHeaderStrip } from "./GameHeaderStrip";
 import { TargetColumn } from "./TargetColumn";
@@ -7,7 +5,6 @@ import { TrendsColumn } from "./TrendsColumn";
 import { GalleryColumn } from "./GalleryColumn";
 import { ForgeViewPanel } from "./ForgeViewPanel";
 import { AIThinkingTrace } from "./Panels";
-import { BriefBuilderPanel } from "./BriefBuilder";
 
 interface Props {
   character: GameCharacter;
@@ -34,8 +31,6 @@ export function CharacterDossier({
   onDelete,
   onGenerateFromBrief,
 }: Props) {
-  const [briefOpen, setBriefOpen] = useState(false);
-
   return (
     <div className="px-6 py-4 flex flex-col gap-5 min-h-screen">
       <GameHeaderStrip
@@ -74,13 +69,15 @@ export function CharacterDossier({
         <TargetColumn breakdown={character.scoreBreakdown} topHooks={character.topHooks} />
         <TrendsColumn breakdown={character.scoreBreakdown} trend={character.trendAnalysis} />
         <GalleryColumn
+          character={character}
           gameId={character.id}
+          ads={character.ads}
+          trend={character.trendAnalysis}
           briefs={character.briefs}
           generations={character.generations}
           gallery={character.gallery}
           generating={generating}
           onGenerateFromBrief={onGenerateFromBrief}
-          onComposeBrief={() => setBriefOpen(true)}
         />
       </div>
 
@@ -89,30 +86,6 @@ export function CharacterDossier({
         forecast={character.revenueForecast}
         trend={character.trendAnalysis}
       />
-
-      {briefOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8 bg-foreground/40 backdrop-blur-sm"
-          onClick={() => setBriefOpen(false)}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-3xl max-h-[90vh] overflow-y-auto panel-grim bg-card p-6"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-display text-lg text-foreground">Compose a brief</h3>
-              <button
-                onClick={() => setBriefOpen(false)}
-                className="h-8 w-8 rounded-sm flex items-center justify-center text-muted-foreground hover:bg-muted/50"
-                aria-label="Close brief builder"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-            <BriefBuilderPanel character={character} onCreated={() => setBriefOpen(false)} />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
