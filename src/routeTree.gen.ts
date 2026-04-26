@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ShareRouteImport } from './routes/share'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as DesignRouteImport } from './routes/design'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CharacterGameIdRouteImport } from './routes/character.$gameId'
 import { Route as CharacterGameIdBriefRouteImport } from './routes/character.$gameId.brief'
@@ -26,6 +27,11 @@ const ShareRoute = ShareRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DesignRoute = DesignRouteImport.update({
+  id: '/design',
+  path: '/design',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -63,6 +69,7 @@ const CharacterGameIdEditGenerationIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/design': typeof DesignRoute
   '/settings': typeof SettingsRoute
   '/share': typeof ShareRoute
   '/character/$gameId': typeof CharacterGameIdRouteWithChildren
@@ -73,6 +80,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/design': typeof DesignRoute
   '/settings': typeof SettingsRoute
   '/share': typeof ShareRoute
   '/character/$gameId': typeof CharacterGameIdRouteWithChildren
@@ -84,6 +92,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/design': typeof DesignRoute
   '/settings': typeof SettingsRoute
   '/share': typeof ShareRoute
   '/character/$gameId': typeof CharacterGameIdRouteWithChildren
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/design'
     | '/settings'
     | '/share'
     | '/character/$gameId'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/design'
     | '/settings'
     | '/share'
     | '/character/$gameId'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/design'
     | '/settings'
     | '/share'
     | '/character/$gameId'
@@ -127,6 +139,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DesignRoute: typeof DesignRoute
   SettingsRoute: typeof SettingsRoute
   ShareRoute: typeof ShareRoute
   CharacterGameIdRoute: typeof CharacterGameIdRouteWithChildren
@@ -146,6 +159,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/design': {
+      id: '/design'
+      path: '/design'
+      fullPath: '/design'
+      preLoaderRoute: typeof DesignRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -213,6 +233,7 @@ const CharacterGameIdRouteWithChildren = CharacterGameIdRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DesignRoute: DesignRoute,
   SettingsRoute: SettingsRoute,
   ShareRoute: ShareRoute,
   CharacterGameIdRoute: CharacterGameIdRouteWithChildren,

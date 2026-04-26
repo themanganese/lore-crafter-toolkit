@@ -139,7 +139,7 @@
   }
 
   html {
-    font-size: 16px; /* 1 rem = 16 px = 12 pt body floor; 1.333 rem = 21.33 px = 16 pt heading floor */
+    font-size: 12.5px;
   }
 
   html, body {
@@ -149,7 +149,7 @@
 
   body {
     font-family: var(--font-body);
-    font-size: 1rem; /* 16 px default */
+    font-size: 1rem;
     background-color: #FEF5EC;
     background-attachment: fixed;
   }
@@ -175,10 +175,6 @@
     font-family: var(--font-mono);
   }
 
-  /* ── Global typographic floors: body ≥ 12 pt (16 px), headings ≥ 16 pt (≈ 21.33 px) ── */
-  h1, h2, h3, h4, h5, h6 {
-    font-size: max(1.333rem, 1em); /* never below 16 pt for any heading */
-  }
 }
 
 @layer utilities {
@@ -327,7 +323,7 @@
     padding: 0.75rem 1.25rem;
     font-family: var(--font-body);
     font-weight: 600;
-    font-size: 1rem; /* 16 px = 12 pt body floor */
+    font-size: 0.923rem; /* 12px at 13px base */
     color: var(--color-muted-foreground);
     border-bottom: 2px solid transparent;
     margin-bottom: -1px;

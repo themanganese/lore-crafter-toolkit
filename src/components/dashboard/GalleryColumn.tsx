@@ -33,12 +33,12 @@ export function GalleryColumn({
     <section className="panel-grim p-5 flex flex-col gap-3 min-h-0 overflow-y-auto">
       {/* ───────── Variants strip ───────── */}
       <div className="flex items-center justify-between gap-2">
-        <div className="font-display text-2xl uppercase tracking-[0.4em] text-gold-dim">
+        <div className="font-display text-sm uppercase tracking-[0.4em] text-gold-dim">
           Variants ({generations.length || fallbackVariants.length})
         </div>
         <button
           onClick={onComposeBrief}
-          className="text-base uppercase tracking-widest text-gold-dim hover:text-gold-bright flex items-center gap-1"
+          className="text-sm uppercase tracking-widest text-gold-dim hover:text-gold-bright flex items-center gap-1"
         >
           <Plus className="h-3 w-3" />
           Compose
@@ -58,7 +58,7 @@ export function GalleryColumn({
               <div className="h-16 w-16 rounded-sm overflow-hidden bg-muted border border-gold/25 group-hover:border-gold/60">
                 <img src={g.imageUrl} alt="" className="h-full w-full object-cover" />
               </div>
-              <span className="text-base uppercase tracking-widest text-gold-bright">
+              <span className="text-sm uppercase tracking-widest text-gold-bright">
                 V{(generations.length - i).toString().padStart(2, "0")}
               </span>
             </a>
@@ -75,14 +75,14 @@ export function GalleryColumn({
                 <div className="h-16 w-16 rounded-sm overflow-hidden bg-muted border border-gold/25 hover:border-gold/60">
                   <img src={g.imageUrl} alt="" className="h-full w-full object-cover" />
                 </div>
-                <span className="text-base uppercase tracking-widest text-gold-bright">
+                <span className="text-sm uppercase tracking-widest text-gold-bright">
                   V{(fallbackVariants.length - i).toString().padStart(2, "0")}
                 </span>
               </a>
             ))}
         </div>
       ) : (
-        <p className="text-base text-muted-foreground italic">
+        <p className="text-sm text-muted-foreground italic">
           No variants forged yet.
         </p>
       )}
@@ -90,7 +90,7 @@ export function GalleryColumn({
       {/* ───────── Saved briefs — forge into variant ───────── */}
       {briefs.length > 0 && (
         <div className="border-t border-gold/15 pt-2 -mt-1">
-          <div className="text-base uppercase tracking-widest text-gold-dim mb-1">
+          <div className="text-sm uppercase tracking-widest text-gold-dim mb-1">
             Saved briefs ({briefs.length}) — forge into variant
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -106,7 +106,7 @@ export function GalleryColumn({
                 ) : (
                   <Hammer className="h-3 w-3 text-gold-bright shrink-0" />
                 )}
-                <span className="font-display text-base text-foreground truncate">{b.title}</span>
+                <span className="font-display text-sm text-foreground truncate">{b.title}</span>
               </button>
             ))}
           </div>

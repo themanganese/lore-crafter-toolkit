@@ -22,9 +22,9 @@ function tierFromScore(n: number): Tier {
 
 function MetaSlot({ label, value }: { label: string; value: string }) {
   return (
-    <div className="min-w-0 flex-1 px-4 first:pl-0 last:pr-0 border-r border-border/60 last:border-r-0">
-      <div className="text-base uppercase tracking-[0.25em] text-gold-dim">{label}</div>
-      <div className="text-base font-normal text-foreground mt-0.5 break-words leading-snug">
+    <div className="min-w-0">
+      <div className="text-xs uppercase tracking-[0.2em] text-gold-dim leading-none">{label}</div>
+      <div className="text-base font-normal text-foreground mt-1 leading-snug break-words">
         {value}
       </div>
     </div>
@@ -55,10 +55,10 @@ export function GameHeaderStrip({
   const tier: Tier | null = score ? tierFromScore(score.winProbability) : null;
 
   return (
-    <header className="panel-grim px-5 py-3 flex items-start gap-5 sticky top-0 z-30">
-      {/* Cover + title + tier */}
-      <div className="flex items-center gap-3 shrink-0 min-w-0 max-w-[26%]">
-        <div className="h-[120px] w-[120px] rounded-sm overflow-hidden gold-frame shrink-0">
+    <header className="panel-grim px-5 py-3 flex items-start gap-4 sticky top-0 z-30">
+      {/* Icon + title + publisher/platform */}
+      <div className="flex items-center gap-3 shrink-0">
+        <div className="h-[120px] w-[120px] rounded-xl overflow-hidden gold-frame shrink-0">
           {character.iconUrl ? (
             <img
               src={character.iconUrl}
@@ -72,10 +72,10 @@ export function GameHeaderStrip({
           )}
         </div>
         <div className="min-w-0">
-          <h1 className="font-display text-2xl text-gradient-gold leading-none truncate">
+          <h1 className="font-display text-xl text-gradient-gold leading-none truncate">
             {character.name}
           </h1>
-          <div className="flex items-center gap-2 mt-1.5 text-base uppercase tracking-widest text-muted-foreground">
+          <div className="flex items-center gap-1.5 mt-1.5 text-xs uppercase tracking-widest text-muted-foreground">
             {tier && <TierBadge tier={tier} size="sm" />}
             <span className="truncate">{character.publisher ?? "Unknown publisher"}</span>
             <span className="text-gold-dim">·</span>
@@ -84,8 +84,11 @@ export function GameHeaderStrip({
         </div>
       </div>
 
-      {/* Metadata strip — non-negotiable: GENRE / CORE LOOP / AUDIENCE / KEY MECHANIC */}
-      <div className="flex-1 min-w-0 flex items-stretch panel-grim bg-parchment/60 px-4 py-2">
+      {/* Divider */}
+      <div className="self-stretch w-px bg-border/60 shrink-0" />
+
+      {/* Metadata strip */}
+      <div className="flex-1 min-w-0 flex flex-col gap-2.5 py-1">
         <MetaSlot label="Genre" value={genre} />
         <MetaSlot label="Core Loop" value={coreLoop} />
         <MetaSlot label="Audience" value={audience} />
@@ -97,7 +100,7 @@ export function GameHeaderStrip({
         <button
           onClick={onRunAnalysis}
           disabled={analyzing}
-          className="gold-frame px-2.5 py-1.5 text-base uppercase tracking-widest text-gold-bright hover:bg-gold/10 disabled:opacity-40 flex items-center gap-1.5"
+          className="gold-frame px-2.5 py-1.5 text-sm uppercase tracking-widest text-gold-bright hover:bg-gold/10 disabled:opacity-40 flex items-center gap-1.5"
         >
           {analyzing ? (
             <Loader2 className="h-3 w-3 animate-spin" />
@@ -109,7 +112,7 @@ export function GameHeaderStrip({
         {character.aiThoughts.length > 0 && !analyzing && (
           <button
             onClick={onToggleTrace}
-            className="gold-frame px-2.5 py-1.5 text-base uppercase tracking-widest text-muted-foreground hover:text-gold-bright"
+            className="gold-frame px-2.5 py-1.5 text-sm uppercase tracking-widest text-muted-foreground hover:text-gold-bright"
           >
             {showTrace ? "Hide" : "View"} AI
           </button>
@@ -117,13 +120,13 @@ export function GameHeaderStrip({
         <button
           onClick={onShare}
           disabled={character.status !== "analyzed"}
-          className="gold-frame px-2.5 py-1.5 text-base uppercase tracking-widest text-gold-bright hover:bg-gold/10 disabled:opacity-40 flex items-center gap-1.5"
+          className="gold-frame px-2.5 py-1.5 text-sm uppercase tracking-widest text-gold-bright hover:bg-gold/10 disabled:opacity-40 flex items-center gap-1.5"
         >
           <Share2 className="h-3 w-3" /> Share
         </button>
         <button
           onClick={onDelete}
-          className="px-2.5 py-1.5 text-base uppercase tracking-widest text-muted-foreground hover:text-destructive flex items-center gap-1.5"
+          className="px-2.5 py-1.5 text-sm uppercase tracking-widest text-muted-foreground hover:text-destructive flex items-center gap-1.5"
         >
           <Trash2 className="h-3 w-3" /> Remove
         </button>

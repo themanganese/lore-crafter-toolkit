@@ -16,8 +16,8 @@ export function Roster() {
         className="px-5 py-5 border-b border-border text-left group"
       >
         <div className="flex items-center gap-2">
-          <Flame className="h-5 w-5 text-gold ember-flicker" />
-          <span className="font-display text-2xl tracking-wider text-gradient-gold">
+          <Flame className="h-[40px] w-[40px] text-gold ember-flicker" />
+          <span className="text-[48px] tracking-wider text-gradient-gold" style={{ fontFamily: "'Pirata One', cursive" }}>
             Forge
           </span>
         </div>

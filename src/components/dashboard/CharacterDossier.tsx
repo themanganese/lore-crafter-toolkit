@@ -59,8 +59,8 @@ export function CharacterDossier({
 
       {character.status === "error" && (
         <div className="panel-grim p-5 border-l-4 border-l-destructive/70">
-          <h3 className="font-display text-2xl text-destructive mb-2">Analysis failed</h3>
-          <p className="text-base text-muted-foreground leading-relaxed">
+          <h3 className="font-display text-sm text-destructive mb-2">Analysis failed</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {character.errorMessage}
           </p>
           <button
@@ -138,7 +138,7 @@ export function CharacterDossier({
             />
 
             <section className="panel-grim p-6 flex flex-col gap-4">
-              <div className="font-display text-2xl uppercase tracking-[0.4em] text-gold-dim">
+              <div className="font-display text-sm uppercase tracking-[0.4em] text-gold-dim">
                 Top Ads · Similar Games
               </div>
               {topAds.length > 0 ? (
@@ -149,7 +149,7 @@ export function CharacterDossier({
                 </div>
               ) : (
                 <div className="flex-1 flex items-center justify-center border border-dashed border-gold/25 rounded-sm py-12">
-                  <p className="text-base text-muted-foreground italic text-center px-4">
+                  <p className="text-sm text-muted-foreground italic text-center px-4">
                     Run analysis to surface top ads from similar games.
                   </p>
                 </div>
@@ -169,7 +169,7 @@ export function CharacterDossier({
             className="w-full max-w-3xl max-h-[90vh] overflow-y-auto panel-grim bg-card p-6"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-display text-2xl text-foreground">Compose a brief</h3>
+              <h3 className="font-display text-sm text-foreground">Compose a brief</h3>
               <button
                 onClick={() => setBriefOpen(false)}
                 className="h-8 w-8 rounded-sm flex items-center justify-center text-muted-foreground hover:bg-muted/50"

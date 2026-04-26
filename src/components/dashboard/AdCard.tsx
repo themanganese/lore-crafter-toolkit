@@ -65,25 +65,25 @@ export function AdCard({ entry }: Props) {
 
       {/* Hook + subtitle */}
       <div className="min-w-0">
-        <div className="font-display text-2xl text-foreground truncate">{ad.hookLabel}</div>
-        <div className="italic text-base text-muted-foreground truncate">
+        <div className="font-display text-sm text-foreground truncate">{ad.hookLabel}</div>
+        <div className="italic text-sm text-muted-foreground truncate">
           {hookSubtitle}
         </div>
       </div>
 
       {/* Chips */}
       <div className="flex items-center gap-1 shrink-0">
-        <span className="text-base uppercase tracking-widest px-1.5 py-0.5 rounded-sm border border-gold/40 text-gold">
+        <span className="text-sm uppercase tracking-widest px-1.5 py-0.5 rounded-sm border border-gold/40 text-gold">
           {ad.network}
         </span>
         {days !== undefined && (
-          <span className="text-base uppercase tracking-widest px-1.5 py-0.5 rounded-sm bg-muted/40 text-foreground/70 border border-border">
+          <span className="text-sm uppercase tracking-widest px-1.5 py-0.5 rounded-sm bg-muted/40 text-foreground/70 border border-border">
             {days}d
           </span>
         )}
         <span
           className={cn(
-            "text-base uppercase tracking-widest px-1.5 py-0.5 rounded-sm border",
+            "text-sm uppercase tracking-widest px-1.5 py-0.5 rounded-sm border",
             FORMAT_STYLES[format],
           )}
         >
@@ -95,17 +95,17 @@ export function AdCard({ entry }: Props) {
       <div className="col-span-4 grid grid-rows-[0fr] group-hover:grid-rows-[1fr] group-focus-within:grid-rows-[1fr] transition-[grid-template-rows] duration-200">
         <div className="overflow-hidden">
           <div className="pt-2 mt-1 border-t border-gold/15 space-y-1">
-            <p className="text-base text-foreground/85 leading-snug">{ad.hookLabel}</p>
-            <p className="text-base text-muted-foreground italic leading-snug">
+            <p className="text-sm text-foreground/85 leading-snug">{ad.hookLabel}</p>
+            <p className="text-sm text-muted-foreground italic leading-snug">
               Ranks #{rank.toString().padStart(2, "0")} — {reasons[0]}
               {reasons[1] ? `. ${reasons[1]}` : ""}.
             </p>
             {mapsTo && (
               <div className="flex items-center gap-1.5">
-                <span className="text-base uppercase tracking-widest text-gold-dim">
+                <span className="text-sm uppercase tracking-widest text-gold-dim">
                   Maps to
                 </span>
-                <span className="text-base uppercase tracking-widest px-1.5 py-0.5 rounded-sm bg-gold-bright/15 text-gold-bright border border-gold-bright/40">
+                <span className="text-sm uppercase tracking-widest px-1.5 py-0.5 rounded-sm bg-gold-bright/15 text-gold-bright border border-gold-bright/40">
                   {mapsTo}
                 </span>
               </div>

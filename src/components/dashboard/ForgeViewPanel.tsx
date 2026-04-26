@@ -33,7 +33,7 @@ function MiniStat({ label, value }: { label: string; value: string }) {
       <Tooltip>
         <TooltipTrigger asChild>
           <div className="flex items-center gap-1 cursor-default w-fit">
-            <div className="text-base uppercase tracking-[0.25em] text-gold-dim">
+            <div className="text-sm uppercase tracking-[0.25em] text-gold-dim">
               {label}
             </div>
             {def && <HelpCircle className="h-2.5 w-2.5 text-gold-dim/60 shrink-0" />}
@@ -42,13 +42,13 @@ function MiniStat({ label, value }: { label: string; value: string }) {
         {def && (
           <TooltipContent
             side="top"
-            className="max-w-64 text-base leading-snug bg-card border border-gold/50 text-foreground shadow-lg"
+            className="max-w-64 text-sm leading-snug bg-card border border-gold/50 text-foreground shadow-lg"
           >
             {def}
           </TooltipContent>
         )}
       </Tooltip>
-      <div className="font-display text-2xl text-foreground mt-0.5 truncate">{value}</div>
+      <div className="font-display text-sm text-foreground mt-0.5 truncate">{value}</div>
     </div>
   );
 }
@@ -79,7 +79,7 @@ export function ForgeViewPanel({ breakdown, forecast, trend }: Props) {
         {/* Left: synthesis + revenue */}
         <div className="flex flex-col gap-4 min-w-0">
           <div>
-            <div className="font-display text-2xl uppercase tracking-[0.4em] text-gold-dim">
+            <div className="font-display text-sm uppercase tracking-[0.4em] text-gold-dim">
               Forge View · Differentiation Angle
             </div>
             <p
@@ -101,14 +101,14 @@ export function ForgeViewPanel({ breakdown, forecast, trend }: Props) {
             <div>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="text-base uppercase tracking-[0.25em] text-gold-dim mb-1 flex items-center gap-1 cursor-default w-fit">
+                  <div className="text-sm uppercase tracking-[0.25em] text-gold-dim mb-1 flex items-center gap-1 cursor-default w-fit">
                     Revenue Forecast · Day 0 → 90
                     <HelpCircle className="h-2.5 w-2.5 text-gold-dim/60" />
                   </div>
                 </TooltipTrigger>
                 <TooltipContent
                   side="top"
-                  className="max-w-64 text-base leading-snug bg-card border border-gold/50 text-foreground shadow-lg"
+                  className="max-w-64 text-sm leading-snug bg-card border border-gold/50 text-foreground shadow-lg"
                 >
                   Projected monthly revenue at Day 30, 60, and 90 based on SensorTower actuals
                   and applied assumptions. Hover data points for assumption details and confidence
@@ -118,7 +118,7 @@ export function ForgeViewPanel({ breakdown, forecast, trend }: Props) {
               <RevenueForecastChart forecast={forecast} />
             </div>
           ) : (
-            <div className="h-[160px] flex items-center justify-center text-base text-muted-foreground italic border border-dashed border-gold/25 rounded-sm">
+            <div className="h-[160px] flex items-center justify-center text-sm text-muted-foreground italic border border-dashed border-gold/25 rounded-sm">
               Revenue forecast pending.
             </div>
           )}
@@ -135,14 +135,14 @@ export function ForgeViewPanel({ breakdown, forecast, trend }: Props) {
         <div className="flex flex-col gap-3 min-w-0">
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="font-display text-2xl uppercase tracking-[0.4em] text-gold-dim flex items-center gap-1 cursor-default w-fit">
+              <div className="font-display text-sm uppercase tracking-[0.4em] text-gold-dim flex items-center gap-1 cursor-default w-fit">
                 Improvement Levers
                 <HelpCircle className="h-2.5 w-2.5 text-gold-dim/60" />
               </div>
             </TooltipTrigger>
             <TooltipContent
               side="top"
-              className="max-w-64 text-base leading-snug bg-card border border-gold/50 text-foreground shadow-lg"
+              className="max-w-64 text-sm leading-snug bg-card border border-gold/50 text-foreground shadow-lg"
             >
               {LEVER_DEF}
             </TooltipContent>
@@ -155,19 +155,19 @@ export function ForgeViewPanel({ breakdown, forecast, trend }: Props) {
                   <TooltipTrigger asChild>
                     <div className="flex items-start gap-3 p-3 border border-gold/30 rounded-sm bg-muted/15 cursor-default">
                       <div className="h-10 w-10 shrink-0 flex items-center justify-center rounded-sm gold-frame">
-                        <span className="font-display text-2xl text-gold-bright tabular-nums">
+                        <span className="font-display text-sm text-gold-bright tabular-nums">
                           +{l.estimatedPointDelta}
                         </span>
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-baseline gap-2 flex-wrap">
-                          <p className="font-display text-2xl text-foreground leading-tight">
+                          <p className="font-display text-sm text-foreground leading-tight">
                             {l.title}
                           </p>
                           {l.trendVelocity && (
                             <span
                               className={cn(
-                                "text-base uppercase tracking-widest px-1.5 py-0.5 rounded-sm border",
+                                "text-sm uppercase tracking-widest px-1.5 py-0.5 rounded-sm border",
                                 l.trendVelocity === "rising" &&
                                   "bg-gold-bright/15 text-gold-bright border-gold-bright/40",
                                 l.trendVelocity === "stable" &&
@@ -181,7 +181,7 @@ export function ForgeViewPanel({ breakdown, forecast, trend }: Props) {
                           )}
                         </div>
                         <p
-                          className="mt-0.5 text-base text-muted-foreground leading-snug"
+                          className="mt-0.5 text-sm text-muted-foreground leading-snug"
                           style={{
                             display: "-webkit-box",
                             WebkitLineClamp: 2,
@@ -196,12 +196,12 @@ export function ForgeViewPanel({ breakdown, forecast, trend }: Props) {
                   </TooltipTrigger>
                   <TooltipContent
                     side="left"
-                    className="max-w-72 text-base leading-snug bg-card border border-gold/50 text-foreground shadow-lg"
+                    className="max-w-72 text-sm leading-snug bg-card border border-gold/50 text-foreground shadow-lg"
                   >
-                    <p className="font-display text-2xl font-bold mb-1">{l.title}</p>
+                    <p className="font-display text-sm font-bold mb-1">{l.title}</p>
                     <p>{l.description}</p>
                     {l.patternAffected && (
-                      <p className="mt-1 text-base text-gold-dim uppercase tracking-widest">
+                      <p className="mt-1 text-sm text-gold-dim uppercase tracking-widest">
                         Pattern · {l.patternAffected}
                       </p>
                     )}
@@ -210,7 +210,7 @@ export function ForgeViewPanel({ breakdown, forecast, trend }: Props) {
               ))}
             </div>
           ) : (
-            <p className="text-base text-muted-foreground italic">
+            <p className="text-sm text-muted-foreground italic">
               No levers surfaced. Re-run analysis to derive improvement paths.
             </p>
           )}

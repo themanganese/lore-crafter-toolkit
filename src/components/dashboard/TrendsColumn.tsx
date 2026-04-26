@@ -30,7 +30,7 @@ export function TrendsColumn({ breakdown, trend }: Props) {
 
   return (
     <section className="panel-grim p-6 flex flex-col gap-5 min-h-0 overflow-y-auto">
-      <div className="font-display text-2xl uppercase tracking-[0.4em] text-gold-dim">
+      <div className="font-display text-sm uppercase tracking-[0.4em] text-gold-dim">
         Trends · velocity × signal
       </div>
 
@@ -39,33 +39,33 @@ export function TrendsColumn({ breakdown, trend }: Props) {
           <StatRadar stats={breakdown.dimensions} />
         </div>
       ) : (
-        <div className="h-[240px] flex items-center justify-center text-base text-muted-foreground italic">
+        <div className="h-[240px] flex items-center justify-center text-sm text-muted-foreground italic">
           Awaiting score data…
         </div>
       )}
 
       <div>
-        <div className="text-base uppercase tracking-[0.25em] text-gold-dim mb-1.5">
+        <div className="text-sm uppercase tracking-[0.25em] text-gold-dim mb-1.5">
           Top patterns · trajectory
         </div>
         <TrendVelocityChart patterns={trend?.whatIsWorking ?? []} />
       </div>
 
       <div>
-        <div className="text-base uppercase tracking-[0.25em] text-gold-dim mb-1.5">
+        <div className="text-sm uppercase tracking-[0.25em] text-gold-dim mb-1.5">
           Velocity × Signal
         </div>
         {tableRows.length > 0 ? (
-          <table className="w-full text-base">
+          <table className="w-full text-sm">
             <thead>
               <tr className="text-left border-b border-gold/30">
-                <th className="text-base uppercase tracking-widest text-muted-foreground py-1.5 pr-2">
+                <th className="text-sm uppercase tracking-widest text-muted-foreground py-1.5 pr-2">
                   Pattern
                 </th>
-                <th className="text-base uppercase tracking-widest text-muted-foreground py-1.5 pr-2 w-16">
+                <th className="text-sm uppercase tracking-widest text-muted-foreground py-1.5 pr-2 w-16">
                   Tag
                 </th>
-                <th className="text-base uppercase tracking-widest text-muted-foreground py-1.5 text-right w-12">
+                <th className="text-sm uppercase tracking-widest text-muted-foreground py-1.5 text-right w-12">
                   Δ
                 </th>
               </tr>
@@ -86,13 +86,13 @@ export function TrendsColumn({ breakdown, trend }: Props) {
                       : "text-foreground/70";
                 return (
                   <tr key={i} className="border-b border-gold/10 last:border-0">
-                    <td className="py-1.5 pr-2 text-base text-foreground/85 truncate max-w-[160px]">
+                    <td className="py-1.5 pr-2 text-sm text-foreground/85 truncate max-w-[160px]">
                       {p.pattern}
                     </td>
                     <td className="py-1.5 pr-2">
                       <span
                         className={cn(
-                          "text-base uppercase tracking-widest px-1.5 py-0.5 rounded-sm border",
+                          "text-sm uppercase tracking-widest px-1.5 py-0.5 rounded-sm border",
                           TAG_STYLES[p.tag] ?? TAG_STYLES.filler,
                         )}
                       >
@@ -101,7 +101,7 @@ export function TrendsColumn({ breakdown, trend }: Props) {
                     </td>
                     <td
                       className={cn(
-                        "py-1.5 text-base tabular-nums text-right",
+                        "py-1.5 text-sm tabular-nums text-right",
                         deltaColor,
                       )}
                     >
@@ -113,7 +113,7 @@ export function TrendsColumn({ breakdown, trend }: Props) {
             </tbody>
           </table>
         ) : (
-          <p className="text-base text-muted-foreground italic">
+          <p className="text-sm text-muted-foreground italic">
             No patterns detected.
           </p>
         )}

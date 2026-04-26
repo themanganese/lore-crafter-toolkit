@@ -83,13 +83,13 @@ export function BriefBuilderPanel({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <p className="text-base text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           {character.briefs.length} brief{character.briefs.length === 1 ? "" : "s"} saved.
           {" "}Adapt {character.name}'s winning patterns into your own ad concepts.
         </p>
         <button
           onClick={() => setOpen((o) => !o)}
-          className="gold-frame px-3 py-1.5 text-base uppercase tracking-widest text-gold-bright hover:bg-gold/10 flex items-center gap-1.5"
+          className="gold-frame px-3 py-1.5 text-sm uppercase tracking-widest text-gold-bright hover:bg-gold/10 flex items-center gap-1.5"
         >
           <Plus className={cn("h-3.5 w-3.5 transition-transform", open && "rotate-45")} />
           {open ? "Close" : "New brief"}
@@ -101,11 +101,11 @@ export function BriefBuilderPanel({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {character.briefs.slice(0, 6).map((b) => (
             <div key={b.id} className="border border-border rounded-sm p-3 bg-muted/15">
-              <div className="font-display text-2xl text-foreground">{b.title}</div>
-              <div className="text-base text-muted-foreground mt-0.5">
+              <div className="font-display text-sm text-foreground">{b.title}</div>
+              <div className="text-sm text-muted-foreground mt-0.5">
                 For {b.targetGameName}
               </div>
-              <p className="text-base text-foreground/70 mt-2 line-clamp-2">
+              <p className="text-sm text-foreground/70 mt-2 line-clamp-2">
                 {b.prompt}
               </p>
             </div>
@@ -148,7 +148,7 @@ export function BriefBuilderPanel({
           <button
             onClick={save}
             disabled={!form.title.trim() || !form.prompt.trim()}
-            className="w-full btn-copper px-4 py-2.5 tracking-wider text-base rounded-sm disabled:opacity-50"
+            className="w-full btn-copper px-4 py-2.5 tracking-wider text-sm rounded-sm disabled:opacity-50"
           >
             Save brief
           </button>
@@ -175,21 +175,21 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="text-base uppercase tracking-widest text-gold-dim">{label}</span>
+      <span className="text-sm uppercase tracking-widest text-gold-dim">{label}</span>
       {multiline ? (
         <textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}
           rows={rows}
           placeholder={placeholder}
-          className="mt-1 w-full bg-input border border-border rounded-sm px-3 py-2 text-base text-foreground focus:outline-none focus:border-gold/60 resize-y"
+          className="mt-1 w-full bg-input border border-border rounded-sm px-3 py-2 text-sm text-foreground focus:outline-none focus:border-gold/60 resize-y"
         />
       ) : (
         <input
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="mt-1 w-full bg-input border border-border rounded-sm px-3 py-2 text-base text-foreground focus:outline-none focus:border-gold/60"
+          className="mt-1 w-full bg-input border border-border rounded-sm px-3 py-2 text-sm text-foreground focus:outline-none focus:border-gold/60"
         />
       )}
     </label>

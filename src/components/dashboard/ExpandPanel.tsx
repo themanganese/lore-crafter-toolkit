@@ -35,9 +35,9 @@ export function ExpandPanel({
       >
         {icon && <div className="text-gold">{icon}</div>}
         <div className="flex-1 min-w-0">
-          <h3 className="font-display text-2xl text-foreground tracking-wide">{title}</h3>
+          <h3 className="font-display text-sm text-foreground tracking-wide">{title}</h3>
           {subtitle && (
-            <p className="text-base uppercase tracking-widest text-muted-foreground mt-0.5">
+            <p className="text-sm uppercase tracking-widest text-muted-foreground mt-0.5">
               {subtitle}
             </p>
           )}
