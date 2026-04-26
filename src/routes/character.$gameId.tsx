@@ -4,7 +4,12 @@ import { useServerFn } from "@tanstack/react-start";
 import { Skull } from "lucide-react";
 import { useCharacter } from "@/hooks/use-characters";
 import { saveCharacter, deleteCharacter } from "@/lib/store";
-import { startAnalysisRun, getRunEvents, generateCreative } from "@/lib/server.functions";
+import {
+  startAnalysisRun,
+  getRunEvents,
+  getRunResult,
+  generateCreative,
+} from "@/lib/server.functions";
 import { CharacterDossier } from "@/components/dashboard/CharacterDossier";
 import type { GeneratedCreative, GalleryItem, ThoughtEvent, CreativeBrief } from "@/lib/types";
 import { toast } from "sonner";
@@ -20,6 +25,7 @@ function CharacterPage() {
   const { character, refresh } = useCharacter(gameId);
   const startRun = useServerFn(startAnalysisRun);
   const fetchEvents = useServerFn(getRunEvents);
+  const fetchResult = useServerFn(getRunResult);
   const generate = useServerFn(generateCreative);
 
   const [analyzing, setAnalyzing] = useState(false);
@@ -48,9 +54,9 @@ function CharacterPage() {
     setLiveEvents([]);
     await saveCharacter({ ...character, status: "scrying", errorMessage: undefined });
 
-    let runId: string | null = null;
+    let pollHandle: ReturnType<typeof setInterval> | null = null;
     try {
-      const result = await startRun({
+      const { runId } = await startRun({
         data: {
           externalId: character.externalId,
           platform: character.platform,
@@ -58,33 +64,55 @@ function CharacterPage() {
           vertical: character.vertical,
         },
       });
-      runId = result.runId;
-      const ev = await fetchEvents({ data: { runId } });
-      setLiveEvents(ev.events);
 
-      if (!result.ok) {
+      // Poll the in-memory run store for live events and completion. The
+      // trace panel updates in real time so the user can watch agents work
+      // instead of staring at a spinner.
+      await new Promise<void>((resolve, reject) => {
+        pollHandle = setInterval(async () => {
+          try {
+            const ev = await fetchEvents({ data: { runId } });
+            setLiveEvents(ev.events);
+            if (ev.done) {
+              if (pollHandle) clearInterval(pollHandle);
+              pollHandle = null;
+              resolve();
+            }
+          } catch (err) {
+            if (pollHandle) clearInterval(pollHandle);
+            pollHandle = null;
+            reject(err);
+          }
+        }, 1500);
+      });
+
+      const { result: r } = await fetchResult({ data: { runId } });
+      const ev = await fetchEvents({ data: { runId } });
+
+      if (!r || r.ok !== true) {
+        const msg = r?.error ?? "Analysis failed";
         await saveCharacter({
           ...character,
           status: "error",
-          errorMessage: result.error ?? "Analysis failed",
+          errorMessage: msg,
           aiThoughts: ev.events,
         });
-        toast.error(result.error ?? "Analysis failed");
+        toast.error(msg);
         return;
       }
 
       await saveCharacter({
         ...character,
         status: "analyzed",
-        ads: result.ads,
-        stats: result.stats,
-        topHooks: result.topHooks,
-        codex: result.codex,
-        vertical: result.refinedVertical || character.vertical,
-        scoreBreakdown: result.scoreBreakdown,
-        revenueForecast: result.revenueForecast,
-        trendAnalysis: result.trendAnalysis,
-        curation: result.curation,
+        ads: r.ads,
+        stats: r.stats,
+        topHooks: r.topHooks,
+        codex: r.codex,
+        vertical: r.refinedVertical || character.vertical,
+        scoreBreakdown: r.scoreBreakdown,
+        revenueForecast: r.revenueForecast,
+        trendAnalysis: r.trendAnalysis,
+        curation: r.curation,
         aiThoughts: ev.events,
         errorMessage: undefined,
       });
@@ -94,6 +122,7 @@ function CharacterPage() {
       await saveCharacter({ ...character, status: "error", errorMessage: msg });
       toast.error(msg);
     } finally {
+      if (pollHandle) clearInterval(pollHandle);
       setAnalyzing(false);
       refresh();
     }

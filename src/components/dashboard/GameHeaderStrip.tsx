@@ -106,7 +106,7 @@ export function GameHeaderStrip({
           )}
           {analyzing ? "Analyzing…" : "Re-run"}
         </button>
-        {character.aiThoughts.length > 0 && !analyzing && (
+        {(analyzing || character.aiThoughts.length > 0) && (
           <button
             onClick={onToggleTrace}
             className="gold-frame px-2.5 py-1.5 text-base uppercase tracking-widest text-muted-foreground hover:text-gold-bright"
