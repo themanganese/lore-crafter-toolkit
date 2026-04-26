@@ -29,9 +29,15 @@ export async function runTrendAnalysis(args: {
   }));
 
   const system = `You are the Silki Trend Analysis agent — a mobile game ad intelligence analyst.
-Given the scraped top ads for a competitor, identify creative PATTERNS across them and classify each as working or saturating. Assign trend_velocity (rising/stable/declining) and signal_strength (high/medium). Count window_appearances (how many ads share the pattern). Write a one-line recommendation per pattern.
+Given the scraped top ads for a competitor, identify creative PATTERNS across them and classify each as working or saturating. Assign trend_velocity (rising/stable/declining) and signal_strength (high/medium). Count window_appearances (how many ads share the pattern).
 
-Then synthesise:
+Be terse. Strict length limits:
+- pattern: ≤ 8 words
+- recommendation: ≤ 15 words, one line, imperative
+- differentiation_angle: ≤ 20 words
+- narrative_arc: one short sentence
+
+Pick only the strongest patterns — quality over quantity. Then synthesise:
 - The single clearest WHITE SPACE / differentiation angle
 - A recommended hook_type (problem-agitate-solve | curiosity gap | mastery arc | social proof | FOMO | challenge)
 - A one-sentence narrative_arc
@@ -55,6 +61,9 @@ ${JSON.stringify(adSummary, null, 2)}`;
   const parsed = await callAITool<AIOut>({
     system,
     user,
+    // Trend is pattern classification + short recommendations — Haiku 4.5 handles
+    // this well at 2–3× the decode speed of Sonnet, which dominates trend latency.
+    model: "claude-haiku-4-5",
     toolName: "submit_trend_analysis",
     parameters: {
       type: "object",
@@ -62,7 +71,7 @@ ${JSON.stringify(adSummary, null, 2)}`;
         what_is_working: {
           type: "array",
           minItems: 2,
-          maxItems: 6,
+          maxItems: 3,
           items: {
             type: "object",
             properties: {
@@ -79,7 +88,7 @@ ${JSON.stringify(adSummary, null, 2)}`;
         what_is_saturating: {
           type: "array",
           minItems: 1,
-          maxItems: 5,
+          maxItems: 3,
           items: {
             type: "object",
             properties: {

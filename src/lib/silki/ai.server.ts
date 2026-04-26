@@ -43,13 +43,17 @@ export async function callAITool<T>(args: {
     body: JSON.stringify({
       model: args.model ?? DEFAULT_MODEL,
       max_tokens: args.maxTokens ?? 4096,
-      system: args.system,
+      // Prompt-cache the static system prompt and tool schema so subsequent
+      // runs of the same agent within ~5 min hit the cache (≈85% latency cut
+      // on cached input). The dynamic `user` block stays uncached.
+      system: [{ type: "text", text: args.system, cache_control: { type: "ephemeral" } }],
       messages: [{ role: "user", content: args.user }],
       tools: [
         {
           name: args.toolName,
           description: `Submit the structured ${args.toolName} payload.`,
           input_schema: args.parameters,
+          cache_control: { type: "ephemeral" },
         },
       ],
       tool_choice: { type: "tool", name: args.toolName },
@@ -88,7 +92,7 @@ export async function callAIChat(args: {
     body: JSON.stringify({
       model: args.model ?? DEFAULT_MODEL,
       max_tokens: args.maxTokens ?? 2048,
-      system: args.system,
+      system: [{ type: "text", text: args.system, cache_control: { type: "ephemeral" } }],
       messages: args.messages,
     }),
   });

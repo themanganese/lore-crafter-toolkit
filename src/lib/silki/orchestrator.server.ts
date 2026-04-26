@@ -59,30 +59,32 @@ export async function runFullAnalysisOrchestrated(args: {
 
     const refinedVerticalSeed = args.vertical || vertical || "";
 
-    // Step 2 — Curation (which panels matter for this game)
+    // Step 2 — Curation + Trend + Score + Revenue all in parallel.
+    // Curation only depends on (gameName, vertical, adsCount), none of which
+    // the trio produces, so it doesn't need to block the critical path.
     emit(args.runId, "orchestrator", "Asking AI which metrics to emphasize for this game…");
-    let curation: DashboardCuration | undefined;
-    try {
-      curation = await curateDashboard({
-        gameName: args.gameName,
-        vertical: refinedVerticalSeed,
-        adsCount: ads.length,
-      });
-      complete(args.runId, "orchestrator", `Focus: ${curation.focus}`);
-    } catch (e) {
-      emit(args.runId, "orchestrator", `Curator skipped (${(e as Error).message})`, "error");
-    }
-
-    // Step 3 — Trend, Score, Revenue in parallel
     emit(args.runId, "trend", "Extracting working / saturating patterns…");
     emit(args.runId, "score", "Scoring 5 dimensions (hook, novelty, fit, alignment, differentiation)…");
     emit(args.runId, "revenue", "Building 30/60/90 day revenue model with named assumptions…");
 
-    const [trendRes, scoreRes, revenueRes] = await Promise.allSettled([
+    const [curationRes, trendRes, scoreRes, revenueRes] = await Promise.allSettled([
+      curateDashboard({
+        gameName: args.gameName,
+        vertical: refinedVerticalSeed,
+        adsCount: ads.length,
+      }),
       runTrendAnalysis({ gameName: args.gameName, vertical: refinedVerticalSeed, ads }),
       runScoreBreakdown({ gameName: args.gameName, vertical: refinedVerticalSeed, ads }),
       runRevenueForecast({ gameName: args.gameName, vertical: refinedVerticalSeed, adsCount: ads.length }),
     ]);
+
+    let curation: DashboardCuration | undefined;
+    if (curationRes.status === "fulfilled") {
+      curation = curationRes.value;
+      complete(args.runId, "orchestrator", `Focus: ${curation.focus}`);
+    } else {
+      emit(args.runId, "orchestrator", `Curator skipped (${curationRes.reason?.message ?? curationRes.reason})`, "error");
+    }
 
     let trendAnalysis: TrendAnalysis | undefined;
     if (trendRes.status === "fulfilled") {
