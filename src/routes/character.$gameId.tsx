@@ -150,7 +150,14 @@ function CharacterPage() {
         gallery: [galleryItem, ...character.gallery],
       });
       refresh();
-      toast.success("Variant forged");
+      const variantUrl = `/character/${character.id}/variant/${gen.id}`;
+      toast.success("Variant forged — click Open to view", {
+        duration: 20000,
+        action: {
+          label: "Open",
+          onClick: () => window.open(variantUrl, "_blank", "noreferrer"),
+        },
+      });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Generation failed");
     } finally {
