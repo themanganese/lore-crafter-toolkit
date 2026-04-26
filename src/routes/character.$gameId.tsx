@@ -150,7 +150,13 @@ function CharacterPage() {
         gallery: [galleryItem, ...character.gallery],
       });
       refresh();
-      toast.success("Variant forged");
+      toast.success("Variant forged — click Open to view", {
+        duration: 20000,
+        action: {
+          label: "Open",
+          onClick: () => window.open(r.imageUrl, "_blank", "noreferrer"),
+        },
+      });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Generation failed");
     } finally {

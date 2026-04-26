@@ -69,10 +69,10 @@ export async function generateImage(args: {
     body: JSON.stringify({
       prompt: args.prompt,
       modelId,
-      width: args.width ?? 1024,
-      height: args.height ?? 1024,
+      width: args.width ?? 768,
+      height: args.height ?? 768,
       numSamples: 1,
-      numInferenceSteps: 30,
+      numInferenceSteps: 20,
       guidance: 7,
     }),
   });
@@ -91,9 +91,9 @@ export async function generateImage(args: {
   }
 
   // Poll job status
-  const deadline = Date.now() + 90_000;
+  const deadline = Date.now() + 150_000;
   while (Date.now() < deadline) {
-    await new Promise((r) => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 1200));
     const stat = await fetch(`${BASE}/jobs/${jobId}`, {
       headers: { Authorization: authHeader(), Accept: "application/json" },
     });
@@ -126,7 +126,7 @@ export async function generateImage(args: {
     }
   }
 
-  throw new Error("Scenario job timed out after 90s");
+  throw new Error("Scenario job timed out after 150s");
 }
 
 // Image-to-image (edit) — sends a source image with the new prompt.
@@ -160,10 +160,10 @@ export async function editImage(args: {
       modelId,
       image: args.sourceImageUrl,
       strength: args.strength ?? 0.55,
-      width: args.width ?? 1024,
-      height: args.height ?? 1024,
+      width: args.width ?? 768,
+      height: args.height ?? 768,
       numSamples: 1,
-      numInferenceSteps: 30,
+      numInferenceSteps: 20,
       guidance: 7,
     }),
   });
@@ -180,9 +180,9 @@ export async function editImage(args: {
     throw new Error("Scenario img2img response had no jobId or image URL");
   }
 
-  const deadline = Date.now() + 90_000;
+  const deadline = Date.now() + 150_000;
   while (Date.now() < deadline) {
-    await new Promise((r) => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 1200));
     const stat = await fetch(`${BASE}/jobs/${jobId}`, {
       headers: { Authorization: authHeader(), Accept: "application/json" },
     });
@@ -213,5 +213,5 @@ export async function editImage(args: {
       throw new Error(`Scenario edit failed: ${sj?.job?.statusMessage || sj?.error || "unknown"}`);
     }
   }
-  throw new Error("Scenario edit timed out after 90s");
+  throw new Error("Scenario edit timed out after 150s");
 }

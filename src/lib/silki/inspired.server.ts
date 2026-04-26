@@ -155,7 +155,13 @@ CRITICAL RULES:
 - Do not blandly generalise. Each brief should feel like a concrete shot list.
 - Spread inspiration across DIFFERENT comparable games and DIFFERENT creative angles (don't make 3 briefs from the same competitor).
 - Each brief includes a Scenario img2img-ready text-to-image prompt: a single still frame describing subject, environment, lighting, composition, art style.
-- Titles are punchy (≤6 words), CTAs are imperative (≤4 words).`;
+
+Strict length limits — be terse, no filler:
+- title: ≤ 6 words
+- cta: ≤ 4 words, imperative
+- source_hook / target_hook: ≤ 20 words each
+- mechanic / visual_cue / pacing / notes: ≤ 25 words each
+- scenario_prompt: 60–90 words, dense visual detail only`;
 
   const user = `Target game: ${args.targetGameName}
 Vertical: ${args.vertical || "unknown"}
@@ -183,6 +189,11 @@ Produce ${briefsCount} inspired briefs.`;
   const parsed = await callAITool<AIOut>({
     system,
     user,
+    // Inspired briefs are template-shaped multi-output creative writing — Haiku 4.5
+    // handles it well at 2–3× the decode speed of Sonnet, which dominates latency
+    // here (typical output is 2–3K tokens of structured fields).
+    model: "claude-haiku-4-5",
+    maxTokens: 3000,
     toolName: "submit_inspired_briefs",
     parameters: {
       type: "object",
