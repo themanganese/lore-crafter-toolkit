@@ -46,6 +46,8 @@
   --color-ash: var(--ash);
   --color-ember: var(--ember);
   --color-parchment: var(--parchment);
+  --color-cyan: var(--cyan);
+  --color-cyan-bright: var(--cyan-bright);
 
   --color-tier-s: var(--gold-bright);
   --color-tier-a: var(--gold);
@@ -54,13 +56,13 @@
   --color-tier-d: var(--ash);
 
   --color-chart-1: var(--gold);
-  --color-chart-2: var(--copper);
+  --color-chart-2: var(--cyan);
   --color-chart-3: var(--bronze);
   --color-chart-4: var(--gold-dim);
   --color-chart-5: var(--iron);
 
-  --font-display: "Cinzel", "Trajan Pro", "Times New Roman", serif;
-  --font-body: "Inter", "Helvetica Neue", system-ui, sans-serif;
+  --font-display: "Alte Haas Grotesk", "Arial Narrow", sans-serif;
+  --font-body: "Open Sans", "Helvetica Neue", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
 
   --shadow-glow: 0 0 24px color-mix(in oklab, var(--gold) 28%, transparent);
@@ -71,65 +73,73 @@
 :root {
   --radius: 0.4rem;
 
-  /* Parchment base */
-  --background: oklch(0.96 0.015 80);            /* warm cream */
-  --foreground: oklch(0.22 0.02 60);             /* warm charcoal */
+  /* Linen base — new 7-colour palette */
+  --background: oklch(0.97 0.012 78);            /* Linen #FEF5EC */
+  --foreground: oklch(0.12 0.005 130);           /* Onyx #141613 */
 
-  --card: oklch(0.99 0.008 85);                  /* ivory panel */
-  --card-foreground: oklch(0.22 0.02 60);
+  --card: oklch(0.99 0.005 80);                  /* near-white linen panel */
+  --card-foreground: oklch(0.12 0.005 130);
 
-  --popover: oklch(0.99 0.008 85);
-  --popover-foreground: oklch(0.22 0.02 60);
+  --popover: oklch(0.99 0.005 80);
+  --popover-foreground: oklch(0.12 0.005 130);
 
-  --primary: oklch(0.62 0.15 70);                /* deep amber gold */
-  --primary-foreground: oklch(0.99 0.005 80);
+  --primary: oklch(0.82 0.13 65);                /* Light Caramel #FFBE79 */
+  --primary-foreground: oklch(0.12 0.005 130);   /* Onyx on caramel */
 
-  --secondary: oklch(0.92 0.02 80);              /* light parchment */
-  --secondary-foreground: oklch(0.28 0.02 60);
+  --secondary: oklch(0.88 0.07 60);              /* Soft Apricot #FCD7AD */
+  --secondary-foreground: oklch(0.12 0.005 130);
 
-  --muted: oklch(0.93 0.015 80);
-  --muted-foreground: oklch(0.45 0.02 60);
+  --muted: oklch(0.93 0.03 68);                  /* between linen and apricot */
+  --muted-foreground: oklch(0.40 0.02 60);
 
-  --accent: oklch(0.55 0.18 45);                 /* copper accent for CTAs */
-  --accent-foreground: oklch(0.99 0.005 80);
+  --accent: oklch(0.57 0.07 215);                /* Pacific Cyan #5296A5 */
+  --accent-foreground: oklch(0.97 0.012 78);     /* Linen on cyan */
 
   --destructive: oklch(0.55 0.2 25);
-  --destructive-foreground: oklch(0.99 0.005 80);
+  --destructive-foreground: oklch(0.97 0.012 78);
 
-  --border: oklch(0.62 0.08 70 / 0.32);          /* gold-tinted hairline */
-  --input: oklch(0.97 0.01 80);
-  --ring: oklch(0.62 0.15 70 / 0.5);
+  --border: oklch(0.82 0.09 65 / 0.35);          /* caramel-tinted hairline */
+  --input: oklch(0.97 0.012 78);                 /* Linen */
+  --ring: oklch(0.57 0.07 215 / 0.5);            /* cyan focus ring */
 
   /* Brand-specific */
-  --gold: oklch(0.62 0.15 70);
-  --gold-bright: oklch(0.78 0.16 80);            /* hero gold */
-  --gold-dim: oklch(0.5 0.08 70);
-  --bronze: oklch(0.55 0.12 55);
-  --copper: oklch(0.55 0.18 45);
+  --gold: oklch(0.78 0.10 63);                   /* mid-caramel */
+  --gold-bright: oklch(0.82 0.13 65);            /* Light Caramel #FFBE79 */
+  --gold-dim: oklch(0.46 0.09 52);               /* Olive Wood */
+  --bronze: oklch(0.46 0.09 52);                 /* Olive Wood #865F3A */
+  --copper: oklch(0.63 0.11 58);                 /* mid warm-brown CTA */
   --iron: oklch(0.55 0.015 70);
-  --ash: oklch(0.7 0.01 70);
+  --ash: oklch(0.70 0.01 70);
   --ember: oklch(0.62 0.21 35);
-  --parchment: oklch(0.94 0.025 85);
+  --parchment: oklch(0.88 0.07 60);              /* Soft Apricot #FCD7AD */
+  --cyan: oklch(0.57 0.07 215);                  /* Pacific Cyan #5296A5 */
+  --cyan-bright: oklch(0.86 0.09 210);           /* Frosted Blue #82DDF0 */
 
-  --sidebar: oklch(0.94 0.018 80);
-  --sidebar-foreground: oklch(0.28 0.02 60);
-  --sidebar-primary: oklch(0.62 0.15 70);
-  --sidebar-primary-foreground: oklch(0.99 0.005 80);
-  --sidebar-accent: oklch(0.96 0.015 80);
-  --sidebar-accent-foreground: oklch(0.28 0.02 60);
-  --sidebar-border: oklch(0.62 0.08 70 / 0.28);
-  --sidebar-ring: oklch(0.62 0.15 70 / 0.5);
+  --sidebar: oklch(0.95 0.018 75);
+  --sidebar-foreground: oklch(0.20 0.01 130);
+  --sidebar-primary: oklch(0.82 0.13 65);        /* Light Caramel */
+  --sidebar-primary-foreground: oklch(0.12 0.005 130);
+  --sidebar-accent: oklch(0.97 0.012 78);        /* Linen */
+  --sidebar-accent-foreground: oklch(0.20 0.01 130);
+  --sidebar-border: oklch(0.82 0.09 65 / 0.28);
+  --sidebar-ring: oklch(0.57 0.07 215 / 0.5);
 }
 
 .dark {
   /* Dark variant kept consistent for shadcn primitives that read .dark */
-  --background: oklch(0.96 0.015 80);
-  --foreground: oklch(0.22 0.02 60);
+  --background: oklch(0.97 0.012 78);
+  --foreground: oklch(0.12 0.005 130);
 }
 
 @layer base {
   * {
     border-color: var(--color-border);
+    /* Enforce minimum readable size — all text at or above 12px */
+    min-height: 0;
+  }
+
+  html {
+    font-size: 16px; /* 1 rem = 16 px; text-sm = 14 px, text-xs = 12 px (= 12 pt floor) */
   }
 
   html, body {
@@ -139,18 +149,41 @@
 
   body {
     font-family: var(--font-body);
+    font-size: 1rem; /* 16 px default */
     background-image:
-      /* paper grain */
-      radial-gradient(circle at 25% 15%, color-mix(in oklab, var(--bronze) 5%, transparent) 0%, transparent 30%),
-      radial-gradient(circle at 75% 85%, color-mix(in oklab, var(--gold) 6%, transparent) 0%, transparent 35%),
-      radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--parchment) 60%, transparent) 0%, transparent 70%);
+      /* paper grain — warm linen meets cool cyan breath */
+      radial-gradient(circle at 25% 15%, color-mix(in oklab, var(--bronze) 4%, transparent) 0%, transparent 30%),
+      radial-gradient(circle at 80% 80%, color-mix(in oklab, var(--cyan) 4%, transparent) 0%, transparent 35%),
+      radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--parchment) 55%, transparent) 0%, transparent 70%);
     background-attachment: fixed;
   }
 
-  h1, h2, h3, h4, .font-display {
+  /* ── Brand font: Alte Haas Grotesk Bold 700 ── */
+  h1, h2, h3, h4, h5, h6,
+  .font-display {
     font-family: var(--font-display);
-    letter-spacing: 0.02em;
+    font-weight: 700;
+    letter-spacing: 0.01em;
   }
+
+  /* ── Text font: Open Sans (default for everything else) ── */
+  body, p, li, td, th,
+  input, textarea, select, button, label,
+  .font-body {
+    font-family: var(--font-body);
+  }
+
+  /* ── Monospace: only for actual numeric/code content ── */
+  code, pre,
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  /* ── Global 12 pt floor (12px minimum at any base size) ── */
+  * {
+    min-font-size: 12px; /* future-proof hint */
+  }
+  .text-xs { font-size: 0.75rem; } /* 12px at default 16px base = exactly 12pt floor */
 }
 
 @layer utilities {
@@ -295,5 +328,54 @@
   @keyframes fab-pulse {
     0%, 100% { box-shadow: 0 8px 24px -6px color-mix(in oklab, var(--copper) 60%, transparent), 0 0 0 0 color-mix(in oklab, var(--copper) 40%, transparent); }
     50% { box-shadow: 0 8px 24px -6px color-mix(in oklab, var(--copper) 70%, transparent), 0 0 0 10px color-mix(in oklab, var(--copper) 0%, transparent); }
+  }
+
+  /* ── Browser-tab style navigation ─────────────────────────────── */
+  .forge-tab-list {
+    display: flex;
+    width: 100%;
+    align-items: flex-end;
+    border-bottom: 1px solid color-mix(in oklab, var(--gold) 25%, transparent);
+    background: color-mix(in oklab, var(--muted) 60%, transparent);
+    padding: 0 1rem;
+    gap: 0;
+  }
+
+  .forge-tab {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.8125rem; /* 13px — above the 12px floor */
+    color: var(--color-muted-foreground);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    white-space: nowrap;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    cursor: pointer;
+    background: transparent;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  .forge-tab:hover {
+    color: var(--color-foreground);
+    background: color-mix(in oklab, var(--gold) 5%, transparent);
+  }
+
+  .forge-tab[data-state="active"] {
+    color: var(--color-foreground);
+    border-bottom-color: var(--color-gold-bright);
+    background: var(--color-card);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, var(--gold) 15%, transparent),
+      0 -2px 8px -4px color-mix(in oklab, var(--gold) 20%, transparent);
+  }
+
+  .forge-tab-content {
+    margin-top: 0;
+    padding-top: 1.25rem;
   }
 }
