@@ -55,8 +55,9 @@ export async function generateImage(args: {
       model: args.modelId || "mock_model",
     };
   }
-  // Default to a generally available foundation model id; user can override later.
-  const modelId = args.modelId || "model_default";
+  // Public Flux LoRA: "Legendary TCG Characters 2.0" — fits the Forge dossier theme.
+  // Override per-call via args.modelId.
+  const modelId = args.modelId || "model_1Nhnp4C7eJShiFmSpvopxyUa";
 
   const submit = await fetch(`${BASE}/generate/txt2img`, {
     method: "POST",
@@ -100,16 +101,8 @@ export async function generateImage(args: {
     const sj = await stat.json();
     const status = sj?.job?.status ?? sj?.status;
     if (status === "success" || status === "completed") {
-      const imageUrl =
-        sj?.job?.metadata?.assetIds?.[0] ||
-        sj?.asset?.url ||
-        sj?.images?.[0]?.url ||
-        sj?.assets?.[0]?.url;
-      if (imageUrl && typeof imageUrl === "string" && imageUrl.startsWith("http")) {
-        return { imageUrl, jobId, model: modelId };
-      }
-      // Some endpoints return asset IDs needing a second fetch
-      const assetId = sj?.job?.metadata?.assetIds?.[0] || sj?.assetIds?.[0];
+      const assetId: string | undefined =
+        sj?.job?.metadata?.assetIds?.[0] || sj?.assetIds?.[0];
       if (assetId) {
         const asset = await fetch(`${BASE}/assets/${assetId}`, {
           headers: { Authorization: authHeader(), Accept: "application/json" },
@@ -119,6 +112,12 @@ export async function generateImage(args: {
           const url = aj?.asset?.url || aj?.url;
           if (url) return { imageUrl: url, jobId, model: modelId };
         }
+      }
+      // Some plans return URLs inline
+      const inline =
+        sj?.asset?.url || sj?.images?.[0]?.url || sj?.assets?.[0]?.url;
+      if (inline && typeof inline === "string" && inline.startsWith("http")) {
+        return { imageUrl: inline, jobId, model: modelId };
       }
       throw new Error(`Scenario job completed but no asset URL found: ${JSON.stringify(sj).slice(0, 200)}`);
     }
@@ -147,7 +146,7 @@ export async function editImage(args: {
       model: args.modelId || "mock_model",
     };
   }
-  const modelId = args.modelId || "model_default";
+  const modelId = args.modelId || "model_1Nhnp4C7eJShiFmSpvopxyUa";
 
   const submit = await fetch(`${BASE}/generate/img2img`, {
     method: "POST",
@@ -191,14 +190,8 @@ export async function editImage(args: {
     const sj = await stat.json();
     const status = sj?.job?.status ?? sj?.status;
     if (status === "success" || status === "completed") {
-      const imageUrl =
-        sj?.asset?.url ||
-        sj?.images?.[0]?.url ||
-        sj?.assets?.[0]?.url;
-      if (imageUrl && typeof imageUrl === "string" && imageUrl.startsWith("http")) {
-        return { imageUrl, jobId, model: modelId };
-      }
-      const assetId = sj?.job?.metadata?.assetIds?.[0] || sj?.assetIds?.[0];
+      const assetId: string | undefined =
+        sj?.job?.metadata?.assetIds?.[0] || sj?.assetIds?.[0];
       if (assetId) {
         const asset = await fetch(`${BASE}/assets/${assetId}`, {
           headers: { Authorization: authHeader(), Accept: "application/json" },
@@ -208,6 +201,11 @@ export async function editImage(args: {
           const url = aj?.asset?.url || aj?.url;
           if (url) return { imageUrl: url, jobId, model: modelId };
         }
+      }
+      const inline =
+        sj?.asset?.url || sj?.images?.[0]?.url || sj?.assets?.[0]?.url;
+      if (inline && typeof inline === "string" && inline.startsWith("http")) {
+        return { imageUrl: inline, jobId, model: modelId };
       }
       throw new Error("Scenario edit completed but no asset URL found");
     }
